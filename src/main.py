@@ -2,6 +2,8 @@ import os
 import Document
 from nltk.stem import SnowballStemmer
 
+#GLOBAL Vars:
+SNOWBALL = SnowballStemmer(language="english")
 
 def parse(file, id: int) -> Document:
     #weightDict = loop through all the {key:word : val: int}
@@ -11,7 +13,8 @@ def parse(file, id: int) -> Document:
     #tfFreqDict = loop through keys of weightDict and create dict {key:stemWord : val: (freq:float, weight:int)}
     tfFreqDict = {}
     for key in weightDict.keys():
-        tfFreqDict[key] = (weightDict[key][1]/totalWords, weightDict[key][0])
+        #stem the key as you're storing into the tfFreqDict
+        tfFreqDict[SNOWBALL.stem(key)] = (weightDict[key][1]/totalWords, weightDict[key][0])
     # instantiate Document -> Document(id, tfFreqDict)
     doc = Document(id, tfFreqDict)
     return doc 
