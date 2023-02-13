@@ -13,22 +13,18 @@ def parse(file, id: int) -> Document:
     pass
 
 
-def main():
 
+def main():
     # assign directory
-    directory = 'SearchEngine/DEV/'
+    directory = 'DEV/'
+    directory = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), directory)
     # iterate over files in
     # that directory
     for subdir, dirs, files in os.walk(directory):
         for file in files:
             file =os.path.join(subdir, file)
             with open(file, 'r') as opened:
-                parse(file)
-                print('success')
-                break
-
-
-    
+                pass
 
 
 
