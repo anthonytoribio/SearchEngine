@@ -11,6 +11,11 @@ def parse(file, id: int) -> Document:
 
 
 def main():
+
+    id = 0
+    indexer = dict()
+    documentDict = dict()
+
     # assign directory
     directory = 'DEV/'
     directory = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), directory)
@@ -18,9 +23,17 @@ def main():
     # that directory
     for subdir, dirs, files in os.walk(directory):
         for file in files:
-            file =os.path.join(subdir, file)
-            with open(file, 'r') as opened:
-                pass
+            file = os.path.join(subdir, file)
+            # print(file)
+            # with open(file, 'r') as opened:
+            #     pass
+
+            document = parse(file, id)
+            documentDict[id] = document
+            id += 1
+
+            
+
 
 
 
