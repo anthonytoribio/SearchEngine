@@ -32,7 +32,9 @@ def main():
             documentDict[id] = document
             id += 1
 
-            
+    for index, doc in documentDict.items():
+        for stem, score in doc.doc_tf_dict.items():
+            indexer[stem].append(index)
 
 
 
