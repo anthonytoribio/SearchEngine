@@ -46,10 +46,6 @@ def main():
             indexer[stem].append(index)
 
 
-    snowball = SnowballStemmer(language='english')
-    print(snowball.stem('fairly'))           
-
-
 if __name__ == "__main__":
     main()
 
