@@ -21,7 +21,8 @@ def parse(file, id: int) -> Document:
     soup = BeautifulSoup(f["content"], features="html.parser")
     totalWords = len(soup.get_text().split())
     # Assigning a weight of 3 for all words in the title tag
-    weightDict = {word.strip() : [3, 1] for word in soup.find("title").text.split()}
+    if soup.title != None:
+        weightDict = {word.strip() : [3, 0] for word in soup.find("title").text.split()}
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
@@ -30,7 +31,7 @@ def parse(file, id: int) -> Document:
     # Assigning a weight of 2 if word in h_words not already in weightDict
     for word in h_words:
         if word not in weightDict:
-            weightDict[word] = [2, 1]
+            weightDict[word] = [2, 0]
         else:
             weightDict[word][1] += 1
 
@@ -74,9 +75,7 @@ def main():
             # print(file)
             # with open(file, 'r') as opened:
             #     pass
-
             document = parse(file, id)
-            exit()
             documentDict[id] = document
             id += 1
 
