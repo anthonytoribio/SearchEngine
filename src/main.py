@@ -4,6 +4,7 @@ import pickle
 from nltk.stem import SnowballStemmer
 from bs4 import BeautifulSoup
 import json
+from collections import defaultdict
 
 
 #GLOBAL Vars:
@@ -60,7 +61,7 @@ def parse(file, id: int) -> Document:
 def main():
 
     id = 0
-    indexer = dict()
+    indexer = defaultdict(list)
     documentDict = dict()
 
     # assign directory
@@ -80,7 +81,9 @@ def main():
             id += 1
 
     for index, doc in documentDict.items():
+        #print(index, " |", doc) #DEBUG
         for stem, score in doc.doc_tf_dict.items():
+            #print(stem, "\n") DEBUG
             indexer[stem].append(index)
 
 
