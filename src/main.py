@@ -33,9 +33,6 @@ def parse(file, id: int) -> Document:
     for word in h_words:
         if word not in weightDict:
             weightDict[word] = [3, 0]
-        #TODO: POSSIBLE LOGIC ERROR    
-        else:
-            weightDict[word][1] += 1
 
     # Getting all words in bold
     bold_tags = soup.find_all('b') + soup.find_all('strong')
@@ -45,8 +42,6 @@ def parse(file, id: int) -> Document:
     for word in bold_words:
         if word not in weightDict:
             weightDict[word] = [2, 0]
-        else:
-            weightDict[word][1] += 1
 
     # Getting all words in the document
     all_text = [word for word in soup.stripped_strings]
