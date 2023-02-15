@@ -110,7 +110,9 @@ def main():
     doc_dict_file.close()
     
     
-
+    parent_dir = os.path.dirname(os.path.realpath(__file__))
+    indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
+    json.dump(indexer, indexer_json_file)
 
 
 if __name__ == "__main__":
