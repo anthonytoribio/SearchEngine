@@ -8,6 +8,8 @@ def tokenize(wordList: '[str]') -> '[str]':
     that are seperated by non alphanumeric characters. If an error occured
     then the function will return -1.
     """
+    if len(wordList) < 1:
+        return wordList
     try:
         tokens = []
         data = " ".join(wordList)
