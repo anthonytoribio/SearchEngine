@@ -28,7 +28,7 @@ def tokenize(wordList: '[str]') -> '[str]':
     except UnicodeDecodeError:
         print("ERROR: Program can only tokenize a text file (.txt).")
         return -1
-    if tokens[-1] != data[start:index] and data[start] in ALPHANUMERIC:
+    if (len(tokens) < 1 or not tokens[-1] != data[start:index]) and data[start] in ALPHANUMERIC:
         tokens.append(data[start:index])
     #DEBUG print(tokens)
     return tokens
