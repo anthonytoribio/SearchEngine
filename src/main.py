@@ -21,19 +21,30 @@ def parse(file, id: int) -> Document:
     f = json.load(f)
     soup = BeautifulSoup(f["content"], features="html.parser")
     totalWords = len(soup.get_text().split())
-    # Assigning a weight of 3 for all words in the title tag
+    # Assigning a weight of 4 for all words in the title tag
     if soup.title != None:
-        weightDict = {SNOWBALL.stem(word.strip()) : [3, 0] for word in soup.find("title").text.split()}
+        weightDict = {SNOWBALL.stem(word.strip()) : [4, 0] for word in soup.find("title").text.split()}
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
     h_words = [SNOWBALL.stem(word) for h in h_tags for word in h.text.split()]
 
-    # Assigning a weight of 2 if word in h_words not already in weightDict
+    # Assigning a weight of 3 if word in h_words not already in weightDict
     for word in h_words:
         if word not in weightDict:
-            weightDict[word] = [2, 0]
+            weightDict[word] = [3, 0]
         #TODO: POSSIBLE LOGIC ERROR    
+        else:
+            weightDict[word][1] += 1
+
+    # Getting all words in bold
+    bold_tags = soup.find_all('b') + soup.find_all('strong')
+    bold_words = [SNOWBALL.stem(word) for b in bold_tags for word in b.text.split()]
+
+    #Assigning a weight of 2 if word in bold_words not already in weightDict
+    for word in bold_words:
+        if word not in weightDict:
+            weightDict[word] = [2, 0]
         else:
             weightDict[word][1] += 1
 
