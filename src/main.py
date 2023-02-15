@@ -5,6 +5,7 @@ from nltk.stem import SnowballStemmer
 from bs4 import BeautifulSoup
 import json
 from collections import defaultdict
+from helper import Dict_Update
 
 
 #GLOBAL Vars:
@@ -30,23 +31,14 @@ def parse(file, id: int) -> Document:
     h_words = [SNOWBALL.stem(word) for h in h_tags for word in h.text.split()]
 
     # Assigning a weight of 3 if word in h_words not already in weightDict
-    for word in h_words:
-        if word not in weightDict:
-            weightDict[word] = [3, 0]
-        #TODO: POSSIBLE LOGIC ERROR    
-        else:
-            weightDict[word][1] += 1
+    weightDict = Dict_Update(weightDict, h_words, 3, False)
 
     # Getting all words in bold
     bold_tags = soup.find_all('b') + soup.find_all('strong')
     bold_words = [SNOWBALL.stem(word) for b in bold_tags for word in b.text.split()]
 
     #Assigning a weight of 2 if word in bold_words not already in weightDict
-    for word in bold_words:
-        if word not in weightDict:
-            weightDict[word] = [2, 0]
-        else:
-            weightDict[word][1] += 1
+    weightDict = Dict_Update(weightDict, bold_words, 2, False)
 
     # Getting all words in the document
     all_text = [word for word in soup.stripped_strings]
@@ -54,12 +46,7 @@ def parse(file, id: int) -> Document:
 
     # Assigning a weight of 1 for all other words in the document 
     # if not already in weightDict
-    for word in all_words:
-        if word not in weightDict:
-            weightDict[word] = [1, 1]
-        else:
-            weightDict[word][1] += 1
-
+    weightDict = Dict_Update(weightDict, bold_words, 1, True)
     for key in weightDict.keys():
         #stem the key as you're storing into the tfFreqDict
         tfFreqDict[key] = (weightDict[key][1]/totalWords, weightDict[key][0])
