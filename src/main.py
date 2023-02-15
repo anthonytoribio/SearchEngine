@@ -23,22 +23,23 @@ def parse(file, id: int) -> Document:
     totalWords = len(soup.get_text().split())
     # Assigning a weight of 3 for all words in the title tag
     if soup.title != None:
-        weightDict = {word.strip() : [3, 0] for word in soup.find("title").text.split()}
+        weightDict = {SNOWBALL.stem(word.strip()) : [3, 0] for word in soup.find("title").text.split()}
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
-    h_words = [word for h in h_tags for word in h.text.split()]
+    h_words = [SNOWBALL.stem(word) for h in h_tags for word in h.text.split()]
 
     # Assigning a weight of 2 if word in h_words not already in weightDict
     for word in h_words:
         if word not in weightDict:
             weightDict[word] = [2, 0]
+        #TODO: POSSIBLE LOGIC ERROR    
         else:
             weightDict[word][1] += 1
 
     # Getting all words in the document
     all_text = [word for word in soup.stripped_strings]
-    all_words = [word for text in all_text for word in text.split()]
+    all_words = [SNOWBALL.stem(word) for text in all_text for word in text.split()]
 
     # Assigning a weight of 1 for all other words in the document 
     # if not already in weightDict
@@ -50,7 +51,7 @@ def parse(file, id: int) -> Document:
 
     for key in weightDict.keys():
         #stem the key as you're storing into the tfFreqDict
-        tfFreqDict[SNOWBALL.stem(key)] = (weightDict[key][1]/totalWords, weightDict[key][0])
+        tfFreqDict[key] = (weightDict[key][1]/totalWords, weightDict[key][0])
     # instantiate Document -> Document(id, tfFreqDict)
     doc = Document(id, tfFreqDict)
     return doc 
