@@ -53,8 +53,8 @@ def parse(file, id: int) -> Document:
     for key in weightDict.keys():
         #stem the key as you're storing into the tfFreqDict
         tfFreqDict[key] = (weightDict[key][1]/totalWords, weightDict[key][0])
-    # instantiate Document -> Document(id, tfFreqDict)
-    doc = Document(id, tfFreqDict)
+    # instantiate Document -> Document(id, tfFreqDict, url)
+    doc = Document(id, tfFreqDict, f["url"])
     return doc 
     
 
