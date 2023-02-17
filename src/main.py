@@ -28,7 +28,7 @@ def parse(file, id: int) -> Document:
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
-    h_words = [word for h in h_tags for word in h.text.split()]
+    h_words = [SNOWBALL.stem(word) for h in h_tags for word in h.text.split()]
 
     h_words = tokenize(h_words)
     # Assigning a weight of 3 if word in h_words not already in weightDict
@@ -36,7 +36,7 @@ def parse(file, id: int) -> Document:
 
     # Getting all words in bold
     bold_tags = soup.find_all('b') + soup.find_all('strong')
-    bold_words = [word for b in bold_tags for word in b.text.split()]
+    bold_words = [SNOWBALL.stem(word) for b in bold_tags for word in b.text.split()]
 
     bold_words = tokenize(bold_words)
     #Assigning a weight of 2 if word in bold_words not already in weightDict
@@ -44,7 +44,7 @@ def parse(file, id: int) -> Document:
 
     # Getting all words in the document
     all_text = [word for word in soup.stripped_strings]
-    all_words = [word for text in all_text for word in text.split()]
+    all_words = [SNOWBALL.stem(word) for text in all_text for word in text.split()]
 
     all_words = tokenize(all_words)
     # Assigning a weight of 1 for all other words in the document 
@@ -87,10 +87,12 @@ def main():
         for stem, score in doc.doc_tf_dict.items():
             #print(stem, "\n") DEBUG
             indexer[stem].append(index)
+    print("NUMBER OF DOCUMENTS IS: ", id + 1)
 
 
 
     #this is to stor the indexer and doc_dict
+    print("THE # OF UNIQUE STEMMED WORDS ARE: ", len(indexer))
     indexer_file = open(os.path.join(parent_dir, "data/indexer"), 'wb')
     pickle.dump(indexer, indexer_file)
     indexer_file.close()
@@ -102,7 +104,7 @@ def main():
     
     parent_dir = os.path.dirname(os.path.realpath(__file__))
     indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
-    json.dump(indexer, indexer_json_file)
+    json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
 
 
 if __name__ == "__main__":
