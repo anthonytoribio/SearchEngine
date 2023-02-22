@@ -72,6 +72,9 @@ def main():
     parent_dir = os.path.dirname(os.path.realpath(__file__))
     # iterate over files in
     # that directory
+
+    CAP = 10000000 #LIMIT of pickle 
+
     for subdir, dirs, files in os.walk(directory):
         for file in files:
             file = os.path.join(subdir, file)
@@ -81,12 +84,48 @@ def main():
             document = parse(file, id)
             documentDict[id] = document
             id += 1
+    #This is used for the partial indexer file name
+    partialIndexCounter = 1
 
-    for index, doc in documentDict.items():
+    for id, doc in documentDict.items():
         #print(index, " |", doc) #DEBUG
         for stem, score in doc.doc_tf_dict.items():
             #print(stem, "\n") DEBUG
-            indexer[stem].append(index)
+            indexer[stem].append(id)
+        #Check the size of the partial indexer
+        if (len(pickle.dumps(indexer, -1)) >= CAP):
+                #sort the indexer by alpha (lexico)
+                sortedKeys = sorted(indexer)
+                partialIndexerFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexCounter)+".txt"), 'w')
+                partialIndexCounter += 1
+                for key in sortedKeys:
+                    partialIndexerFile.write(key + " ")
+                    for docId in indexer[key]:
+                        partialIndexerFile.write(str(docId) + " ")
+                    partialIndexerFile.write("\n")
+                partialIndexerFile.close()
+                indexer = defaultdict(list)
+
+        
+
+
+    # Merge all the partial indexes
+    partialIndexes = partialIndexCounter - 1 #3
+
+    if partialIndexes > 1:
+        currFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexes) +".txt"), 'r')
+        prevFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexes-1) +".txt"), 'r')
+
+         
+        
+            
+        
+        
+
+        #merge pI2 & pI3 -> pI4
+        #partialIndexes - 2 = 1
+        
+
     print("NUMBER OF DOCUMENTS IS: ", id + 1)
 
 

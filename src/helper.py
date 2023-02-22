@@ -41,6 +41,22 @@ def Dict_Update(dictionary, words, weight, count_words):
             dictionary[word][1] += 1
     return dictionary
 
+def merge(file1, file2):
+    line1 = file1.readline()
+    line2 = file2.readline()
+    while (line1 != '' and line2 != ''):
+        line1 = line1.rstrip().split()
+        line2 = line2.rstrip().split()
+
+        if (line1[0] < line2[0]):
+            pass
+        elif (line1[0] > line2[0]):
+            pass
+        else:
+            # Case where the two stems are the same
+            pass
+
+
 
 # if __name__=="__main__":
 #     exWords = ["Pineapple", "pizza", "spider-man", "UCI", "don't", "Eric", "would",
