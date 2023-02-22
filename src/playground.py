@@ -1,9 +1,9 @@
-from nltk.stem import SnowballStemmer
-SNOWBALL = SnowballStemmer(language="english")
+# from nltk.stem import SnowballStemmer
+# SNOWBALL = SnowballStemmer(language="english")
 
-print(SNOWBALL.stem("statistics112"))
-print(SNOWBALL.stem("produce"))
-print(SNOWBALL.stem("produces"))
+# print(SNOWBALL.stem("statistics112"))
+# print(SNOWBALL.stem("produce"))
+# print(SNOWBALL.stem("produces"))
 
 
 # import pickle, os
@@ -24,3 +24,8 @@ print(SNOWBALL.stem("produces"))
 #     data = json.load(json_file)
     
 # print(len(data))
+
+
+import os
+from helper import *
+print(read_set_from_line("src/example.txt", 16))
