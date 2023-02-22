@@ -24,7 +24,7 @@ def parse(file, id: int) -> Document:
     totalWords = len(soup.get_text().split())
     # Assigning a weight of 4 for all words in the title tag
     if soup.title != None:
-        weightDict = {SNOWBALL.stem(word.strip()) : [4, 0] for word in tokenize(soup.find("title").text.split())}
+        weightDict = {SNOWBALL.stem(word.strip()) : 4 for word in tokenize(soup.find("title").text.split())}
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
@@ -32,7 +32,7 @@ def parse(file, id: int) -> Document:
 
     h_words = tokenize(h_words)
     # Assigning a weight of 3 if word in h_words not already in weightDict
-    weightDict = Dict_Update(weightDict, h_words, 3, False)
+    weightDict = Dict_Update(weightDict, h_words, 3)
 
     # Getting all words in bold
     bold_tags = soup.find_all('b') + soup.find_all('strong')
@@ -40,7 +40,7 @@ def parse(file, id: int) -> Document:
 
     bold_words = tokenize(bold_words)
     #Assigning a weight of 2 if word in bold_words not already in weightDict
-    weightDict = Dict_Update(weightDict, bold_words, 2, False)
+    weightDict = Dict_Update(weightDict, bold_words, 2)
 
     # Getting all words in the document
     all_text = [word for word in soup.stripped_strings]
@@ -49,10 +49,14 @@ def parse(file, id: int) -> Document:
     all_words = tokenize(all_words)
     # Assigning a weight of 1 for all other words in the document 
     # if not already in weightDict
-    weightDict = Dict_Update(weightDict, all_words, 1, True)
+    weightDict = Dict_Update(weightDict, all_words, 1)
+    freqDict = defaultdict(int)
+    for word in all_words:
+        freqDict[word] += 1
+
     for key in weightDict.keys():
         #stem the key as you're storing into the tfFreqDict
-        tfFreqDict[key] = (weightDict[key][1]/totalWords, weightDict[key][0])
+        tfFreqDict[key] = (weightDict[key]/totalWords, freqDict[key])
     # instantiate Document -> Document(id, tfFreqDict, url)
     doc = Document(id, tfFreqDict, f["url"])
     return doc 

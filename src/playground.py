@@ -1,27 +1,26 @@
-# from nltk.stem import SnowballStemmer
-# SNOWBALL = SnowballStemmer(language="english")
+from nltk.stem import SnowballStemmer
+SNOWBALL = SnowballStemmer(language="english")
 
-# print(SNOWBALL.stem("i'm"))
+print(SNOWBALL.stem("statistics112"))
+print(SNOWBALL.stem("produce"))
+print(SNOWBALL.stem("produces"))
 
-import json
-import os
 
-import json
+# import pickle, os
+
+# parent_dir = os.path.dirname(os.path.realpath(__file__))
+
+
+# indexer = {"Hello":2}
+# indexer_file = open(os.path.join(parent_dir, "data/indexer"), 'wb')
+# pickle.dump(indexer, indexer_file)
+# indexer_file.close()
+
+# import os
+
+# import json
+
+# with open('src/data/indexer.json') as json_file:
+#     data = json.load(json_file)
     
-# Data to be written
-dictionary ={
-    "name" : "sathiyajith",
-    "rollno" : 56,
-    "cgpa" : 8.6,
-    "phonenumber" : "9976770500"
-}
-    
-
-    
-parent_dir = os.path.dirname(os.path.realpath(__file__))
-
-indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
-
-# with open(os.path.join(parent_dir, "data/indexer.json"), "w") as outfile:
-json.dump(dictionary, indexer_json_file)
-    
+# print(len(data))

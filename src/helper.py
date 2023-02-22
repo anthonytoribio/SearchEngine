@@ -31,14 +31,14 @@ def tokenize(wordList: '[str]') -> '[str]':
     if (len(tokens) < 1 or not tokens[-1] != data[start:index]) and data[start] in ALPHANUMERIC:
         tokens.append(data[start:index])
     #DEBUG print(tokens)
-    return tokens
+    return tokens   
 
-def Dict_Update(dictionary, words, weight, count_words):
+def Dict_Update(dictionary, words, weight):
     for word in words:
         if word not in dictionary:
-            dictionary[word] = [weight, 0]
-        if count_words:
-            dictionary[word][1] += 1
+            dictionary[word] = weight
+        else:
+            dictionary[word] += weight
     return dictionary
 
 
