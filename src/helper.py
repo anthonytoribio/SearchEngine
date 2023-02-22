@@ -31,14 +31,14 @@ def tokenize(wordList: '[str]') -> '[str]':
     if (len(tokens) < 1 or not tokens[-1] != data[start:index]) and data[start] in ALPHANUMERIC:
         tokens.append(data[start:index])
     #DEBUG print(tokens)
-    return tokens
+    return tokens   
 
-def Dict_Update(dictionary, words, weight, count_words):
+def Dict_Update(dictionary, words, weight):
     for word in words:
         if word not in dictionary:
-            dictionary[word] = [weight, 0]
-        if count_words:
-            dictionary[word][1] += 1
+            dictionary[word] = weight
+        else:
+            dictionary[word] += weight
     return dictionary
 
 def merge(file1, file2):
@@ -57,6 +57,37 @@ def merge(file1, file2):
             pass
 
 
+
+def read_set_from_line( filename, offset)  -> set:    
+    with open(filename, 'r') as file:
+        file.seek(offset)
+        line = file.readline()
+        return set(line.split()[1:])
+
+    
+
+
+
+def boolean_retrieval(query, filename, indexer)->set:
+    query = sorted(query, key = lambda x: indexer[x][2])
+    s = read_set_from_line(filename, indexer[query[0]][1])
+
+
+
+    for string in query[1:]:
+        offset = indexer[string][1]
+        next_set = read_set_from_line(filename, offset)
+        temp = set()
+        for word in s:
+            if word in next_set:
+                temp.add(word)
+        s = temp
+            
+        
+    return s
+
+{1,2,3,4,5,6,7,8,9,10}
+{1,2,3}
 
 # if __name__=="__main__":
 #     exWords = ["Pineapple", "pizza", "spider-man", "UCI", "don't", "Eric", "would",
