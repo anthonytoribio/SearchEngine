@@ -1,3 +1,7 @@
+import os
+
+PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
+
 ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
     "2", "3", "4", "5", "6", "7", "8", "9", "0"}
@@ -41,20 +45,94 @@ def Dict_Update(dictionary, words, weight):
             dictionary[word] += weight
     return dictionary
 
-def merge(file1, file2):
+def ourSort(thefile, list1, list2):
+    p1 = 0
+    p2 = 0
+
+    while p1 < len(list1) and p2 < len(list2):
+        val1 = int(list1[p1])
+        val2 = int(list2[p2])
+        if val1 < val2:
+            thefile.write(list1[p1] + ' ')
+            p1 += 1
+        elif val2 < val1:
+            thefile.write(list2[p2] + ' ')
+            p2 += 1
+        else:
+            thefile.write(list1[p1] + ' ')
+            p1 += 1
+            p2 += 1
+    
+    if p1 < len(list1):
+        while p1 < len(list1):
+            thefile.write(list1[p1] + ' ')
+            p1 += 1
+    
+    if p2 < len(list2):
+        while p2 < len(list2):
+            thefile.write(list2[p2] + ' ')
+            p2 += 1
+    
+    thefile.write('\n')
+
+
+
+
+
+def merge(file1, file2, index):
+
+    returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'w')
     line1 = file1.readline()
     line2 = file2.readline()
     while (line1 != '' and line2 != ''):
-        line1 = line1.rstrip().split()
-        line2 = line2.rstrip().split()
+        ln1 = line1.rstrip().split()
+        ln2 = line2.rstrip().split()
 
-        if (line1[0] < line2[0]):
-            pass
-        elif (line1[0] > line2[0]):
-            pass
+        if (ln1[0] < ln2[0]):
+            returnedFile.write(ln1[0] + ' ')
+            for doc in ln1[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')
+            line1 = file1.readline()
+        elif (ln1[0] > ln2[0]):
+            returnedFile.write(ln2[0] + ' ')
+            for doc in ln2[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')
+            line2 = file2.readline()
         else:
             # Case where the two stems are the same
-            pass
+            returnedFile.write(ln1[0] + ' ')
+            ourSort(returnedFile, ln1[1:], ln2[1:])
+            line1 = file1.readline()
+            line2 = file2.readline()
+    
+    if line1 != '':
+        while line1 != '':
+            ln1 = line1.rstrip().split()
+            returnedFile.write(ln1[0] + ' ')
+            for doc in ln1[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')  
+            line1 = file1.readline()  
+
+    if line2 != '':
+        while line2 != '':
+            ln2 = line2.rstrip().split()
+            returnedFile.write(ln2[0] + ' ')
+            for doc in ln2[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')  
+            line2 = file2.readline()    
+
+    file1.close()
+    file2.close()
+    returnedFile.close()
+    returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'r')
+
+    return [returnedFile, index + 1]     
+
+
 
 
 
@@ -89,8 +167,25 @@ def boolean_retrieval(query, filename, indexer)->set:
 {1,2,3,4,5,6,7,8,9,10}
 {1,2,3}
 
-# if __name__=="__main__":
-#     exWords = ["Pineapple", "pizza", "spider-man", "UCI", "don't", "Eric", "would",
-#         "order", "pineapple", "pizza", "(apple)"]
+if __name__=="__main__":
+    test1 = open(os.path.join(PARENTDIRECTORY, "data/test1.txt"), 'r')
+    test2 = open(os.path.join(PARENTDIRECTORY, "data/test2.txt"), 'r')
+    merge(test1, test2, 15)
+    #file = open(os.path.join(PARENTDIRECTORY, "data/PI13.txt"), 'r')
+    # outdexer = {}
+    # start = 0
+    # stop = 0
+    # line = file.readline()
+    # while line != '':
+    #     outdexer[line.split()[0]] = start
+    #     start += len(line) + 1
+    #     stop += 1
+    #     line = file.readline()
+    #     if stop == 2:
+    #         break
+    # print(outdexer)
+    # file.seek(36398)
+    # print(file.readline())
+    #pass
 
-#     print(tokenize(exWords))
+    

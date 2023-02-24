@@ -80,7 +80,6 @@ def main():
     CAP = 10000000 #LIMIT of pickle 
 
     for subdir, dirs, files in os.walk(directory):
-        break
         for file in files:
             file = os.path.join(subdir, file)
             # print(file)
@@ -95,11 +94,13 @@ def main():
     for id, doc in documentDict.items():
         #print(index, " |", doc) #DEBUG
         for stem, score in doc.doc_tf_dict.items():
+            if stem == '':
+                continue
             #print(stem, "\n") DEBUG
             indexer[stem].append(id)
         #Check the size of the partial indexer
         if (len(pickle.dumps(indexer, -1)) >= CAP):
-                #sort the indexer by alpha (lexico)
+                #sort the indexer by alpha (lexico) and then write to file
                 sortedKeys = sorted(indexer)
                 partialIndexerFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexCounter)+".txt"), 'w')
                 partialIndexCounter += 1
@@ -111,8 +112,16 @@ def main():
                 partialIndexerFile.close()
                 indexer = defaultdict(list)
 
-        
-
+    if len(indexer) != 0:
+        sortedKeys = sorted(indexer)
+        partialIndexerFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexCounter)+".txt"), 'w')
+        partialIndexCounter += 1
+        for key in sortedKeys:
+            partialIndexerFile.write(key + " ")
+            for docId in indexer[key]:
+                partialIndexerFile.write(str(docId) + " ")
+            partialIndexerFile.write("\n")
+        partialIndexerFile.close()
 
     # Merge all the partial indexes
     partialIndexes = partialIndexCounter - 1 #3
@@ -121,15 +130,27 @@ def main():
         currFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexes) +".txt"), 'r')
         prevFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexes-1) +".txt"), 'r')
 
-         
-        
-            
-        
-        
+        file, idx = merge(prevFile, currFile, partialIndexes)
 
-        #merge pI2 & pI3 -> pI4
-        #partialIndexes - 2 = 1
+        for i in range(1, partialIndexes - 1):
+            currFile = open(os.path.join(parent_dir, "data/PI" + str(i) +".txt"), 'r')
+            file, idx = merge(currFile, file, idx)
         
+        # file variable holds our combined index
+        # idx holds the number of the PI file that has the combined index
+    
+    else:
+        file = open(os.path.join(parent_dir, "data/PI1" + ".txt"), 'r')
+          
+
+    #create the indexer of the indexer
+    outdexer = {}
+    start = 0
+    line = file.readline()
+    while line != '':
+        outdexer[line.split()[0]] = start
+        start += len(line)
+        line = file.readline()
 
     print("NUMBER OF DOCUMENTS IS: ", id + 1)
 
@@ -145,10 +166,13 @@ def main():
     pickle.dump(indexer, doc_dict_file)
     doc_dict_file.close()
     
-    
     parent_dir = os.path.dirname(os.path.realpath(__file__))
-    indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
-    json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
+    outdexer_json_file = open(os.path.join(parent_dir, "data/outdexer.json"), 'w')
+    json.dump(outdexer, outdexer_json_file, indent=4, separators=(":", ",")) 
+    
+    # parent_dir = os.path.dirname(os.path.realpath(__file__))
+    # indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
+    # json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
     
     # while 1:
     #     query = input("Type in a query:\n")
