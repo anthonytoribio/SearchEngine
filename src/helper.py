@@ -11,6 +11,8 @@ def tokenize(wordList: '[str]') -> '[str]':
     The function returns a list of strings (tokens) from the original file
     that are seperated by non alphanumeric characters. If an error occured
     then the function will return -1.
+
+    Time Complexity: O(n)
     """
     if len(wordList) < 1:
         return wordList
@@ -45,7 +47,14 @@ def Dict_Update(dictionary, words, weight):
             dictionary[word] += weight
     return dictionary
 
-def ourSort(thefile, list1, list2):
+def ourSort(thefile, list1, list2) -> None:
+    """
+    The function sorts 2 lists of doc ids and writes the sorted doc ids
+    to the given open file (theFile). 
+
+    Time Complexity: O(n)
+    """
+    #2 Pointers to keep track position in list (for merge)
     p1 = 0
     p2 = 0
 
@@ -76,11 +85,16 @@ def ourSort(thefile, list1, list2):
     thefile.write('\n')
 
 
+def merge(file1, file2, index:int):
+    """
+    The function merges 2 given files (partial indexes). While merging
+    the function will write these merged stems and doc ids into 
+    a new PI{N}.txt file. The new text file will be denoted by the index arg.
+    The fuction will return an open file object to the new partial index and 
+    the next file number.
 
-
-
-def merge(file1, file2, index):
-
+    Time Complexity: O(n)
+    """
     returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'w')
     line1 = file1.readline()
     line2 = file2.readline()
@@ -134,23 +148,16 @@ def merge(file1, file2, index):
 
 
 
-
-
 def read_set_from_line( filename, offset)  -> set:    
     with open(filename, 'r') as file:
         file.seek(offset)
         line = file.readline()
         return set(line.split()[1:])
 
-    
-
-
 
 def boolean_retrieval(query, filename, indexer)->set:
     query = sorted(query, key = lambda x: indexer[x][2])
     s = read_set_from_line(filename, indexer[query[0]][1])
-
-
 
     for string in query[1:]:
         offset = indexer[string][1]
@@ -160,17 +167,14 @@ def boolean_retrieval(query, filename, indexer)->set:
             if word in next_set:
                 temp.add(word)
         s = temp
-            
         
     return s
 
-{1,2,3,4,5,6,7,8,9,10}
-{1,2,3}
 
 if __name__=="__main__":
-    test1 = open(os.path.join(PARENTDIRECTORY, "data/test1.txt"), 'r')
-    test2 = open(os.path.join(PARENTDIRECTORY, "data/test2.txt"), 'r')
-    merge(test1, test2, 15)
+    # test1 = open(os.path.join(PARENTDIRECTORY, "data/test1.txt"), 'r')
+    # test2 = open(os.path.join(PARENTDIRECTORY, "data/test2.txt"), 'r')
+    # merge(test1, test2, 15)
     #file = open(os.path.join(PARENTDIRECTORY, "data/PI13.txt"), 'r')
     # outdexer = {}
     # start = 0
@@ -186,6 +190,6 @@ if __name__=="__main__":
     # print(outdexer)
     # file.seek(36398)
     # print(file.readline())
-    #pass
+    pass
 
     
