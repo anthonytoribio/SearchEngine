@@ -159,8 +159,8 @@ def read_set_from_line( filename, offset)  -> set:
 
 #this function is bone of boolean retrieval, it takes a query of words, the name of the file to ream from, and an indexer object
 def boolean_retrieval(query, filename, indexer)->set:
-    query = sorted(query, key = lambda x: indexer[x][2])
-    s = read_set_from_line(filename, indexer[query[0]][1])
+    query = sorted(query, key = lambda x: indexer[x][1])
+    s = read_set_from_line(filename, indexer[query[0]][0])
 
     for string in query[1:]:
         offset = indexer[string][1]
