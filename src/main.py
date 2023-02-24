@@ -189,7 +189,7 @@ def main():
     parent_dir = os.path.dirname(os.path.realpath(__file__))
 
     #check if the indexer is already created if not then create
-    if (not os.path.isfile(os.path.join(parent_dir, + "data/" + FILE))):
+    if (not os.path.isfile(os.path.join(parent_dir, "data/" + FILE))):
         print("CREATING INDEXER......")
         buildIndex()
         print("INDEX HAS BEEN CREATED \n")
