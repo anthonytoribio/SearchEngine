@@ -148,6 +148,8 @@ def merge(file1, file2, index:int):
 
 
 
+#This function takes a filename and an offset representing the statring byte to read from, it returns a set of words 
+# that are read from the given line  
 def read_set_from_line( filename, offset)  -> set:    
     with open(filename, 'r') as file:
         file.seek(offset)
@@ -155,6 +157,7 @@ def read_set_from_line( filename, offset)  -> set:
         return set(line.split()[1:])
 
 
+#this function is bone of boolean retrieval, it takes a query of words, the name of the file to ream from, and an indexer object
 def boolean_retrieval(query, filename, indexer)->set:
     query = sorted(query, key = lambda x: indexer[x][2])
     s = read_set_from_line(filename, indexer[query[0]][1])
