@@ -132,7 +132,7 @@ def buildIndex():
             if (i == partialIndexes - 2):
                 file, idx = merge(currFile, file, idx, final=True)
             else:
-               file, idx = merge(currFile, file, idx, final=True) 
+               file, idx = merge(currFile, file, idx, final=False) 
         
         # file variable holds our combined index
         # idx holds the number of the PI file that has the combined index
@@ -155,7 +155,7 @@ def buildIndex():
     print("NUMBER OF DOCUMENTS IS: ", id + 1)
     #store outdexer in a pickle file
     outdexer_file = open(os.path.join(parent_dir, "data/outdexer"), 'wb')
-    pickle.dump(indexer, outdexer)
+    pickle.dump(outdexer, outdexer_file)
     outdexer_file.close()
 
     #store the documentDict in a pickle file
