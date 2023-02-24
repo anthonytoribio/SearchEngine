@@ -111,15 +111,16 @@ def main():
     indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
     json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
     
-    # while 1:
-    #     query = input("Type in a query:\n")
-    #     if query.lower().strip() == "exit":
-    #         return
-    #     query = query.split()
-    #     s = boolean_retrieval(query)
-    #     print("Here are your search results: ")
-    #     for doc_id in s:
-    #         print(documentDict[doc_id].docUrl)
+    while 1:
+        query = input("Type in a query:\n")
+        if query.lower().strip() == "exit":
+            return
+        query = query.split()
+        s = boolean_retrieval(query)
+        print("Here are your search results: ")
+        for doc_id in s:
+            print(documentDict[doc_id].docUrl)
+
 if __name__ == "__main__":
     main()
 
