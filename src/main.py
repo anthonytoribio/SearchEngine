@@ -160,7 +160,7 @@ def buildIndex():
 
     #store the documentDict in a pickle file
     doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
-    pickle.dump(indexer, doc_dict_file)
+    pickle.dump(documentDict, doc_dict_file)
     doc_dict_file.close() 
 
     #Store the outdexer for debugging purposes
