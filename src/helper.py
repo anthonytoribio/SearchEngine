@@ -1,6 +1,7 @@
 import os
 
 PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
+FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
 
 ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
@@ -85,7 +86,7 @@ def ourSort(thefile, list1, list2) -> None:
     thefile.write('\n')
 
 
-def merge(file1, file2, index:int):
+def merge(file1, file2, index:int, final = False):
     """
     The function merges 2 given files (partial indexes). While merging
     the function will write these merged stems and doc ids into 
@@ -95,7 +96,10 @@ def merge(file1, file2, index:int):
 
     Time Complexity: O(n)
     """
-    returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'w')
+    if (final):
+        returnedFile = open(os.path.join(PARENTDIRECTORY, FILE), 'w')
+    else:
+        returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'w')
     line1 = file1.readline()
     line2 = file2.readline()
     while (line1 != '' and line2 != ''):
