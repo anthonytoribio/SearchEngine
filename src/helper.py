@@ -97,7 +97,7 @@ def merge(file1, file2, index:int, final = False):
     Time Complexity: O(n)
     """
     if (final):
-        returnedFile = open(os.path.join(PARENTDIRECTORY, FILE), 'w')
+        returnedFile = open(os.path.join(PARENTDIRECTORY, "data/" + FILE), 'w')
     else:
         returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'w')
     line1 = file1.readline()
@@ -146,7 +146,10 @@ def merge(file1, file2, index:int, final = False):
     file1.close()
     file2.close()
     returnedFile.close()
-    returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'r')
+    if (final):
+        returnedFile = open(os.path.join(PARENTDIRECTORY, "data/" + FILE), 'r')
+    else:
+        returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'r')
 
     return [returnedFile, index + 1]     
 
@@ -155,7 +158,7 @@ def merge(file1, file2, index:int, final = False):
 #This function takes a filename and an offset representing the statring byte to read from, it returns a set of words 
 # that are read from the given line  
 def read_set_from_line( filename, offset)  -> set:    
-    with open(filename, 'r') as file:
+    with open(os.path.join(PARENTDIRECTORY, "data/" + filename, 'r')) as file:
         file.seek(offset)
         line = file.readline()
         return set(line.split()[1:])
