@@ -209,7 +209,7 @@ def main():
         s = boolean_retrieval(query, FILE, outdexer)
         print("Here are your search results: ")
         for doc_id in s:
-            print(documentDict[doc_id].docUrl)
+            print(documentDict[int(doc_id)].docUrl)
 if __name__ == "__main__":
     main()
 

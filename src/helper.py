@@ -1,7 +1,9 @@
 import os
+from nltk.stem import SnowballStemmer
 
 PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
+SNOWBALL = SnowballStemmer(language="english")
 
 ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
@@ -158,7 +160,7 @@ def merge(file1, file2, index:int, final = False):
 #This function takes a filename and an offset representing the statring byte to read from, it returns a set of words 
 # that are read from the given line  
 def read_set_from_line( filename, offset)  -> set:    
-    with open(os.path.join(PARENTDIRECTORY, "data/" + filename, 'r')) as file:
+    with open(os.path.join(PARENTDIRECTORY, "data/" + filename), "r") as file:
         file.seek(offset)
         line = file.readline()
         return set(line.split()[1:])
@@ -166,6 +168,7 @@ def read_set_from_line( filename, offset)  -> set:
 
 #this function is bone of boolean retrieval, it takes a query of words, the name of the file to ream from, and an indexer object
 def boolean_retrieval(query, filename, indexer)->set:
+    query = [SNOWBALL.stem(word) for word in tokenize(query)]
     query = sorted(query, key = lambda x: indexer[x][1])
     s = read_set_from_line(filename, indexer[query[0]][0])
 
