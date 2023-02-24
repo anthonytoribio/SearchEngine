@@ -11,6 +11,7 @@ from helper import *
 #GLOBAL Vars:
 SNOWBALL = SnowballStemmer(language="english")
 CAP = 10000000 #LIMIT of pickle 
+FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
 
 
 def parse(file: str, id: int) -> Document:
@@ -63,8 +64,7 @@ def parse(file: str, id: int) -> Document:
     return doc 
 
 
-def main():
-
+def buildIndex():
     id = 0 #id for docs (updates for each new doc)
     indexer = defaultdict(list) #maps stem words to doc ids
     documentDict = dict() #maps docids to Document Objects
@@ -128,26 +128,50 @@ def main():
 
         for i in range(1, partialIndexes - 1):
             currFile = open(os.path.join(parent_dir, "data/PI" + str(i) +".txt"), 'r')
-            file, idx = merge(currFile, file, idx)
+            #Check if this is the final partial indexer to merge
+            if (i == partialIndexes - 2):
+                file, idx = merge(currFile, file, idx, final=True)
+            else:
+               file, idx = merge(currFile, file, idx, final=True) 
         
         # file variable holds our combined index
         # idx holds the number of the PI file that has the combined index
     else:
-        file = open(os.path.join(parent_dir, "data/PI1" + ".txt"), 'r')
+        #rename the PI1 to the FILE global var
+        os.rename(os.path.join(parent_dir, "data/PI1.txt"), FILE)
+        file = open(os.path.join(parent_dir, FILE), 'r')
           
     #Create the indexer of the indexer
     outdexer = {} #maps stem words to the byte in the new combined indexer file
     start = 0
     line = file.readline()
     while line != '':
-        outdexer[line.split()[0]] = start
+        lineList = line.split()
+        outdexer[lineList[0]] = (start, len(lineList)-1)
         start += len(line)
         line = file.readline()
 
+    file.close()
     print("NUMBER OF DOCUMENTS IS: ", id + 1)
+    #store outdexer in a pickle file
+    outdexer_file = open(os.path.join(parent_dir, "data/outdexer"), 'wb')
+    pickle.dump(indexer, outdexer)
+    outdexer_file.close()
+
+    #store the documentDict in a pickle file
+    doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
+    pickle.dump(indexer, doc_dict_file)
+    doc_dict_file.close() 
+
+    #Store the outdexer for debugging purposes
+    parent_dir = os.path.dirname(os.path.realpath(__file__))
+    outdexer_json_file = open(os.path.join(parent_dir, "data/outdexer.json"), 'w')
+    json.dump(outdexer, outdexer_json_file, indent=4, separators=(":", ",")) 
 
 
 
+
+def main():
     #this is to stor the indexer and doc_dict
     #TODO: DELETE LATER
     # print("THE # OF UNIQUE STEMMED WORDS ARE: ", len(indexer))
@@ -159,25 +183,33 @@ def main():
     # pickle.dump(indexer, doc_dict_file)
     # doc_dict_file.close()
     
-    #Store the outdexer for debugging purposes
-    parent_dir = os.path.dirname(os.path.realpath(__file__))
-    outdexer_json_file = open(os.path.join(parent_dir, "data/outdexer.json"), 'w')
-    json.dump(outdexer, outdexer_json_file, indent=4, separators=(":", ",")) 
-    
     # parent_dir = os.path.dirname(os.path.realpath(__file__))
     # indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
     # json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
-    
+    parent_dir = os.path.dirname(os.path.realpath(__file__))
+
+    #check if the indexer is already created if not then create
+    if (os.path.isfile(os.path.join(parent_dir, FILE))):
+        print("CREATING INDEXER......")
+        buildIndex()
+        print("INDEX HAS BEEN CREATED \n")
+    #load the outdexer and documentdict
+    file = open(os.path.join(parent_dir, "data/outdexer"), 'rb')
+    outdexer = pickle.load(file)
+
+    #Load the documentDict
+    file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
+    documentDict = pickle.load(file)
+
     while 1:
         query = input("Type in a query:\n")
         if query.lower().strip() == "exit":
             return
         query = query.split()
-        s = boolean_retrieval(query)
+        s = boolean_retrieval(query, FILE, outdexer)
         print("Here are your search results: ")
         for doc_id in s:
             print(documentDict[doc_id].docUrl)
-
 if __name__ == "__main__":
     main()
 
