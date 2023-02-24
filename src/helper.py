@@ -1,3 +1,7 @@
+import os
+
+PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
+
 ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
     "2", "3", "4", "5", "6", "7", "8", "9", "0"}
@@ -7,6 +11,8 @@ def tokenize(wordList: '[str]') -> '[str]':
     The function returns a list of strings (tokens) from the original file
     that are seperated by non alphanumeric characters. If an error occured
     then the function will return -1.
+
+    Time Complexity: O(n)
     """
     if len(wordList) < 1:
         return wordList
@@ -41,6 +47,106 @@ def Dict_Update(dictionary, words, weight):
             dictionary[word] += weight
     return dictionary
 
+def ourSort(thefile, list1, list2) -> None:
+    """
+    The function sorts 2 lists of doc ids and writes the sorted doc ids
+    to the given open file (theFile). 
+
+    Time Complexity: O(n)
+    """
+    #2 Pointers to keep track position in list (for merge)
+    p1 = 0
+    p2 = 0
+
+    while p1 < len(list1) and p2 < len(list2):
+        val1 = int(list1[p1])
+        val2 = int(list2[p2])
+        if val1 < val2:
+            thefile.write(list1[p1] + ' ')
+            p1 += 1
+        elif val2 < val1:
+            thefile.write(list2[p2] + ' ')
+            p2 += 1
+        else:
+            thefile.write(list1[p1] + ' ')
+            p1 += 1
+            p2 += 1
+    
+    if p1 < len(list1):
+        while p1 < len(list1):
+            thefile.write(list1[p1] + ' ')
+            p1 += 1
+    
+    if p2 < len(list2):
+        while p2 < len(list2):
+            thefile.write(list2[p2] + ' ')
+            p2 += 1
+    
+    thefile.write('\n')
+
+
+def merge(file1, file2, index:int):
+    """
+    The function merges 2 given files (partial indexes). While merging
+    the function will write these merged stems and doc ids into 
+    a new PI{N}.txt file. The new text file will be denoted by the index arg.
+    The fuction will return an open file object to the new partial index and 
+    the next file number.
+
+    Time Complexity: O(n)
+    """
+    returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'w')
+    line1 = file1.readline()
+    line2 = file2.readline()
+    while (line1 != '' and line2 != ''):
+        ln1 = line1.rstrip().split()
+        ln2 = line2.rstrip().split()
+
+        if (ln1[0] < ln2[0]):
+            returnedFile.write(ln1[0] + ' ')
+            for doc in ln1[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')
+            line1 = file1.readline()
+        elif (ln1[0] > ln2[0]):
+            returnedFile.write(ln2[0] + ' ')
+            for doc in ln2[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')
+            line2 = file2.readline()
+        else:
+            # Case where the two stems are the same
+            returnedFile.write(ln1[0] + ' ')
+            ourSort(returnedFile, ln1[1:], ln2[1:])
+            line1 = file1.readline()
+            line2 = file2.readline()
+    
+    if line1 != '':
+        while line1 != '':
+            ln1 = line1.rstrip().split()
+            returnedFile.write(ln1[0] + ' ')
+            for doc in ln1[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')  
+            line1 = file1.readline()  
+
+    if line2 != '':
+        while line2 != '':
+            ln2 = line2.rstrip().split()
+            returnedFile.write(ln2[0] + ' ')
+            for doc in ln2[1:]:
+                returnedFile.write(doc + ' ')
+            returnedFile.write('\n')  
+            line2 = file2.readline()    
+
+    file1.close()
+    file2.close()
+    returnedFile.close()
+    returnedFile = open(os.path.join(PARENTDIRECTORY, "data/PI" + str(index + 1) +".txt"), 'r')
+
+    return [returnedFile, index + 1]     
+
+
 
 def read_set_from_line( filename, offset)  -> set:    
     with open(filename, 'r') as file:
@@ -48,15 +154,10 @@ def read_set_from_line( filename, offset)  -> set:
         line = file.readline()
         return set(line.split()[1:])
 
-    
-
-
 
 def boolean_retrieval(query, filename, indexer)->set:
     query = sorted(query, key = lambda x: indexer[x][2])
     s = read_set_from_line(filename, indexer[query[0]][1])
-
-
 
     for string in query[1:]:
         offset = indexer[string][1]
@@ -66,15 +167,29 @@ def boolean_retrieval(query, filename, indexer)->set:
             if word in next_set:
                 temp.add(word)
         s = temp
-            
         
     return s
 
-{1,2,3,4,5,6,7,8,9,10}
-{1,2,3}
 
-# if __name__=="__main__":
-#     exWords = ["Pineapple", "pizza", "spider-man", "UCI", "don't", "Eric", "would",
-#         "order", "pineapple", "pizza", "(apple)"]
+if __name__=="__main__":
+    # test1 = open(os.path.join(PARENTDIRECTORY, "data/test1.txt"), 'r')
+    # test2 = open(os.path.join(PARENTDIRECTORY, "data/test2.txt"), 'r')
+    # merge(test1, test2, 15)
+    #file = open(os.path.join(PARENTDIRECTORY, "data/PI13.txt"), 'r')
+    # outdexer = {}
+    # start = 0
+    # stop = 0
+    # line = file.readline()
+    # while line != '':
+    #     outdexer[line.split()[0]] = start
+    #     start += len(line) + 1
+    #     stop += 1
+    #     line = file.readline()
+    #     if stop == 2:
+    #         break
+    # print(outdexer)
+    # file.seek(36398)
+    # print(file.readline())
+    pass
 
-#     print(tokenize(exWords))
+    

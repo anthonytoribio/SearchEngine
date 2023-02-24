@@ -10,9 +10,10 @@ from helper import *
 
 #GLOBAL Vars:
 SNOWBALL = SnowballStemmer(language="english")
+CAP = 10000000 #LIMIT of pickle 
 
 
-def parse(file, id: int) -> Document:
+def parse(file: str, id: int) -> Document:
     #weightDict = loop through all the {key:word : val: int}
     weightDict = {}
     #create tfFreqDict
@@ -60,56 +61,112 @@ def parse(file, id: int) -> Document:
     # instantiate Document -> Document(id, tfFreqDict, url)
     doc = Document(id, tfFreqDict, f["url"])
     return doc 
-    
-
 
 
 def main():
 
-    id = 0
-    indexer = defaultdict(list)
-    documentDict = dict()
+    id = 0 #id for docs (updates for each new doc)
+    indexer = defaultdict(list) #maps stem words to doc ids
+    documentDict = dict() #maps docids to Document Objects
 
     # assign directory
     directory = 'DEV/'
     directory = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), directory)
     parent_dir = os.path.dirname(os.path.realpath(__file__))
-    # iterate over files in
-    # that directory
+    # iterate over files in that directory
     for subdir, dirs, files in os.walk(directory):
-        break
+        #Parse the file into a Document Object and add to documentDict
         for file in files:
             file = os.path.join(subdir, file)
-            # print(file)
-            # with open(file, 'r') as opened:
-            #     pass
             document = parse(file, id)
             documentDict[id] = document
             id += 1
+    
+    #This is used for the partial indexer file name
+    partialIndexCounter = 1
 
-    for index, doc in documentDict.items():
-        #print(index, " |", doc) #DEBUG
+    #Loop through each document and add the stem words to the indexer dictionary
+    for id, doc in documentDict.items():
         for stem, score in doc.doc_tf_dict.items():
-            #print(stem, "\n") DEBUG
-            indexer[stem].append(index)
+            if stem == '':
+                continue
+            indexer[stem].append(id)
+        #Check the size of the partial indexer if over CAP then write the partial index into 
+        # disk and then clear the indexer for the documents that follow
+        if (len(pickle.dumps(indexer, -1)) >= CAP):
+                #sort the indexer by alpha (lexico) and then write to file
+                sortedKeys = sorted(indexer)
+                partialIndexerFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexCounter)+".txt"), 'w')
+                partialIndexCounter += 1
+                for key in sortedKeys:
+                    partialIndexerFile.write(key + " ")
+                    for docId in indexer[key]:
+                        partialIndexerFile.write(str(docId) + " ")
+                    partialIndexerFile.write("\n")
+                partialIndexerFile.close()
+                indexer = defaultdict(list)
+
+    if len(indexer) != 0:
+        sortedKeys = sorted(indexer)
+        partialIndexerFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexCounter)+".txt"), 'w')
+        partialIndexCounter += 1
+        for key in sortedKeys:
+            partialIndexerFile.write(key + " ")
+            for docId in indexer[key]:
+                partialIndexerFile.write(str(docId) + " ")
+            partialIndexerFile.write("\n")
+        partialIndexerFile.close()
+
+    # Merge all the partial indexes
+    partialIndexes = partialIndexCounter - 1 #3
+
+    if partialIndexes > 1:
+        currFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexes) +".txt"), 'r')
+        prevFile = open(os.path.join(parent_dir, "data/PI" + str(partialIndexes-1) +".txt"), 'r')
+
+        file, idx = merge(prevFile, currFile, partialIndexes)
+
+        for i in range(1, partialIndexes - 1):
+            currFile = open(os.path.join(parent_dir, "data/PI" + str(i) +".txt"), 'r')
+            file, idx = merge(currFile, file, idx)
+        
+        # file variable holds our combined index
+        # idx holds the number of the PI file that has the combined index
+    else:
+        file = open(os.path.join(parent_dir, "data/PI1" + ".txt"), 'r')
+          
+    #Create the indexer of the indexer
+    outdexer = {} #maps stem words to the byte in the new combined indexer file
+    start = 0
+    line = file.readline()
+    while line != '':
+        outdexer[line.split()[0]] = start
+        start += len(line)
+        line = file.readline()
+
     print("NUMBER OF DOCUMENTS IS: ", id + 1)
 
 
 
     #this is to stor the indexer and doc_dict
-    print("THE # OF UNIQUE STEMMED WORDS ARE: ", len(indexer))
-    indexer_file = open(os.path.join(parent_dir, "data/indexer"), 'wb')
-    pickle.dump(indexer, indexer_file)
-    indexer_file.close()
+    #TODO: DELETE LATER
+    # print("THE # OF UNIQUE STEMMED WORDS ARE: ", len(indexer))
+    # indexer_file = open(os.path.join(parent_dir, "data/indexer"), 'wb')
+    # pickle.dump(indexer, indexer_file)
+    # indexer_file.close()
     
-    doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
-    pickle.dump(indexer, doc_dict_file)
-    doc_dict_file.close()
+    # doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
+    # pickle.dump(indexer, doc_dict_file)
+    # doc_dict_file.close()
     
-    
+    #Store the outdexer for debugging purposes
     parent_dir = os.path.dirname(os.path.realpath(__file__))
-    indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
-    json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
+    outdexer_json_file = open(os.path.join(parent_dir, "data/outdexer.json"), 'w')
+    json.dump(outdexer, outdexer_json_file, indent=4, separators=(":", ",")) 
+    
+    # parent_dir = os.path.dirname(os.path.realpath(__file__))
+    # indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
+    # json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
     
     while 1:
         query = input("Type in a query:\n")
