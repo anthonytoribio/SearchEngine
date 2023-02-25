@@ -25,19 +25,22 @@ def tokenize(wordList: '[str]') -> '[str]':
         data = data.lower()
         start = 0
         for index in range(len(data)):
-            #DEBUG print(f"data char is: {data[index]}")
-            #DEBUG print(f"start data is: {data[start]}")
+            #print(f"data char is: {data[index]}")
+            #print(f"start data is: {data[start]}")
+            #print()
             if not (data[start] in ALPHANUMERIC) and data[index] in ALPHANUMERIC:
                 #DEBUG print("Setting start")
                 start = index
-            elif data[start] in ALPHANUMERIC and not data[index] in ALPHANUMERIC:
+            elif data[start] in ALPHANUMERIC and not (data[index] in ALPHANUMERIC):
                 #DEBUG print("Adding token\n")
                 tokens.append(data[start:index])
                 start = index
     except UnicodeDecodeError:
         print("ERROR: Program can only tokenize a text file (.txt).")
         return -1
-    if (len(tokens) < 1 or not tokens[-1] != data[start:index]) and data[start] in ALPHANUMERIC:
+    index+= 1
+
+    if (len(tokens) < 1 or tokens[-1] != data[start:index]) and data[start] in ALPHANUMERIC:
         tokens.append(data[start:index])
     #DEBUG print(tokens)
     return tokens   
@@ -168,7 +171,9 @@ def read_set_from_line( filename, offset)  -> set:
 
 #this function is bone of boolean retrieval, it takes a query of words, the name of the file to ream from, and an indexer object
 def boolean_retrieval(query, filename, indexer)->set:
+    #print(tokenize(query))
     query = [SNOWBALL.stem(word) for word in tokenize(query)]
+    #print(query)
     query = sorted(query, key = lambda x: indexer[x][1])
     s = read_set_from_line(filename, indexer[query[0]][0])
 
@@ -203,6 +208,7 @@ if __name__=="__main__":
     # print(outdexer)
     # file.seek(36398)
     # print(file.readline())
-    pass
+    a = ["hello"]
+    print("FINAL:", tokenize(a))
 
     
