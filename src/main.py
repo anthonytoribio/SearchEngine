@@ -59,7 +59,7 @@ def parse(file: str, id: int) -> Document:
 
     for key in weightDict.keys():
         #stem the key as you're storing into the tfFreqDict
-        tfFreqDict[key] = (weightDict[key]/totalWords, freqDict[key])
+        tfFreqDict[key] = (weightDict[key], freqDict[key])
     # instantiate Document -> Document(id, tfFreqDict, url)
     doc = Document(id, tfFreqDict, f["url"])
     return doc 
@@ -211,6 +211,7 @@ def main():
         query = query.split()
         s = boolean_retrieval(query, FILE, outdexer)
         print("Here are your search results: ")
+        print(documentDict)
         for doc_id in s:
             print(documentDict[int(doc_id)].docUrl)
 if __name__ == "__main__":
