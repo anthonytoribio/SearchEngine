@@ -178,7 +178,7 @@ def boolean_retrieval(query, filename, indexer)->set:
     s = read_set_from_line(filename, indexer[query[0]][0])
 
     for string in query[1:]:
-        offset = indexer[string][1]
+        offset = indexer[string][0]
         next_set = read_set_from_line(filename, offset)
         temp = set()
         for word in s:
