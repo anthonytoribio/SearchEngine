@@ -13,7 +13,7 @@ import platform
 SNOWBALL = SnowballStemmer(language="english")
 CAP = 10000000 #LIMIT of pickle 
 FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
-
+NUM_DOCS = 0
 
 def parse(file: str, id: int) -> Document:
     #weightDict = loop through all the {key:word : val: int}
@@ -82,6 +82,8 @@ def buildIndex():
             document = parse(file, id)
             documentDict[id] = document
             id += 1
+
+    NUM_DOCS = id #save the number of documents in global var
     
     #This is used for the partial indexer file name
     partialIndexCounter = 1
