@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import json
 from collections import defaultdict
 from helper import *
+import platform
 
 
 #GLOBAL Vars:
@@ -149,6 +150,8 @@ def buildIndex():
         lineList = line.split()
         outdexer[lineList[0]] = (start, len(lineList)-1)
         start += len(line)
+        if platform.system == 'Windows':
+            start += 1
         line = file.readline()
 
     file.close()
