@@ -24,7 +24,7 @@ def parse(file: str, id: int) -> Document:
     f = open(file, 'r')
     f = json.load(f)
     soup = BeautifulSoup(f["content"], features="html.parser")
-    totalWords = len(soup.get_text().split())
+    #totalWords = len(soup.get_text().split())
     # Assigning a weight of 4 for all words in the title tag
     if soup.title != None:
         weightDict = {SNOWBALL.stem(word.strip()) : 4 for word in tokenize(soup.find("title").text.split())}
@@ -152,7 +152,7 @@ def buildIndex():
         lineList = line.split()
         outdexer[lineList[0]] = (start, len(lineList)-1)
         start += len(line)
-        if platform.system == 'Windows':
+        if platform.system() == 'Windows':
             start += 1
         line = file.readline()
 
@@ -213,7 +213,6 @@ def main():
         query = query.split()
         s = boolean_retrieval(query, FILE, outdexer)
         print("Here are your search results: ")
-        print(documentDict)
         for doc_id in s:
             print(documentDict[int(doc_id)].docUrl)
 if __name__ == "__main__":
