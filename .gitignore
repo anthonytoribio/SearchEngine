@@ -113,7 +113,8 @@ venv.bak/
 *.txt
 
 #Ignore all json files
-*.json
+
 
 #Ignore data
 /src/data
+/server/src/data/*
