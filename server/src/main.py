@@ -72,7 +72,7 @@ def buildIndex():
 
     # assign directory
     directory = 'DEV/'
-    directory = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), directory)
+    directory = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), directory)
     parent_dir = os.path.dirname(os.path.realpath(__file__))
     # iterate over files in that directory
     for subdir, dirs, files in os.walk(directory):
