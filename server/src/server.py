@@ -1,8 +1,8 @@
 from flask import Flask
 app = Flask(__name__)
-@app.route("/test")
+@app.route("/")
 def test():
-    return {"hello": [{"1"}]}
+    return 'anthony'
 
 if __name__=='__main__':
-    app.run(debug=True, port=46211)
+    app.run(debug=True, port=4999)

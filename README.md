@@ -8,3 +8,4 @@ an indexer, a boolean retrieval model, ranking algorithm, and user interface.
 To run the program you must have the following installed:
 * Beautiful Soup https://www.crummy.com/software/BeautifulSoup/bs4/doc/
 * NTLK SnowBall https://www.nltk.org/install.html 
+* Flask https://flask.palletsprojects.com/en/2.2.x/installation/
