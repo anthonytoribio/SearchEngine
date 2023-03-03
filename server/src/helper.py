@@ -200,7 +200,7 @@ def calculate_idf_factor(term_occur, doc_len):
 def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
-    sorted_query = sorted(processed_query, key=lambda x: outdexer[x][3], reverse=True)
+    sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
     query_len = len(processed_query)
     
     #This part is to perform heuristics to shrink the number of urls we need to compare
@@ -217,7 +217,7 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
         tf_dict = document.doc_tf_dict
         for term in sorted_query:
             #the formula is weighted_freq * idf_score / length of the document
-            score = tf_dict[term][0] * outdexer[term][3] / tf_dict[term][1]
+            score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
             score_dict[doc_id] += score
     
     retrival_list = list(retrival_sets)
