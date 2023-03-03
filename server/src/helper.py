@@ -213,24 +213,16 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     score_dict = defaultdict(float)
     #compute the score for each document
     for doc_id in retrival_sets:
-        document = documentDict[doc_id]
+        document = documentDict[int(doc_id)]
         tf_dict = document.doc_tf_dict
         for term in sorted_query:
             #the formula is weighted_freq * idf_score / length of the document
             score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
-            score_dict[doc_id] += score
+            score_dict[int(doc_id)] += score
     
     retrival_list = list(retrival_sets)
     return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)
-    
-    
-    
-    
-    
-    
-    pass
-    
-    
+        
 
 
 if __name__=="__main__":
