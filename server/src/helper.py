@@ -1,6 +1,7 @@
 import os
 from nltk.stem import SnowballStemmer
 import math
+from collections import defaultdict
 
 PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
@@ -171,6 +172,7 @@ def read_set_from_line( filename, offset)  -> set:
 
 
 #this function is bone of boolean retrieval, it takes a query of words, the name of the file to ream from, and an indexer object
+#and it returns a set of doc_ids
 def boolean_retrieval(query, filename, indexer)->set:
     #print(tokenize(query))
     query = [SNOWBALL.stem(word) for word in tokenize(query)]
@@ -192,7 +194,43 @@ def boolean_retrieval(query, filename, indexer)->set:
 
 def calculate_idf_factor(term_occur, doc_len):
     quotient = doc_len / term_occur
-    return math.log(quotient, 10)
+    return float(math.log(quotient, 10))
+
+
+def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
+    processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
+    
+    sorted_query = sorted(processed_query, key=lambda x: outdexer[x][3], reverse=True)
+    query_len = len(processed_query)
+    
+    #This part is to perform heuristics to shrink the number of urls we need to compare
+    retrival_sets = set()
+    for i in range(query_len):
+        retrival_sets = boolean_retrieval(sorted_query[:i+1], filename, outdexer)
+        if len(retrival_sets) > top_k:
+            break
+    
+    score_dict = defaultdict(float)
+    #compute the score for each document
+    for doc_id in retrival_sets:
+        document = documentDict[doc_id]
+        tf_dict = document.doc_tf_dict
+        for term in sorted_query:
+            #the formula is weighted_freq * idf_score / length of the document
+            score = tf_dict[term][0] * outdexer[term][3] / tf_dict[term][1]
+            score_dict[doc_id] += score
+    
+    retrival_list = list(retrival_sets)
+    return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)
+    
+    
+    
+    
+    
+    
+    pass
+    
+    
 
 
 if __name__=="__main__":
