@@ -218,4 +218,3 @@ def main():
             print(documentDict[int(doc_id)].docUrl)
 if __name__ == "__main__":
     main()
-

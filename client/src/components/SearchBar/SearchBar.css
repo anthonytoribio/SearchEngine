@@ -1,0 +1,36 @@
+.input-container {
+    justify-content: center;
+    display:flex;
+    height: 2.5rem;  
+    padding-left: 5%;
+}
+
+.input-container input {
+    position: relative;
+    width: 55%;
+    font-size: 1.2rem;
+    border-radius: 1rem;
+    border-style: solid;
+    border-width: 2.5px;
+    border-color: black;
+    padding-left: 1rem;
+    padding-right: 3rem;
+
+}
+
+.input-container button {
+    border-radius: 1rem;
+    border-radius: 0 1rem 1rem 0;
+    position: relative;
+    background-color: white;
+    cursor: pointer;
+    right: 5%;
+    width: 5%;
+}
+
+.input-container button:hover {
+    color: rgb(0, 128, 255)
+}
+
+
+
