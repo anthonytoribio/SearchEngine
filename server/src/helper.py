@@ -1,5 +1,6 @@
 import os
 from nltk.stem import SnowballStemmer
+import math
 
 PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
@@ -187,6 +188,11 @@ def boolean_retrieval(query, filename, indexer)->set:
         s = temp
         
     return s
+
+
+def calculate_idf_factor(term_occur, doc_len):
+    quotient = doc_len / term_occur
+    return math.log(quotient, 10)
 
 
 if __name__=="__main__":
