@@ -212,7 +212,7 @@ def main():
         if query.lower().strip() == "exit":
             return
         query = query.split()
-        s = boolean_retrieval(query, FILE, outdexer)
+        s = ranked_retrieval(query, FILE, outdexer, documentDict, 30)
         print("Here are your search results: ")
         for doc_id in s:
             print(documentDict[int(doc_id)].docUrl)
