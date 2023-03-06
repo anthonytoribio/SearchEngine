@@ -86,9 +86,7 @@ def buildUrlDict():
     return urlDict
 
 
-def pageRank():
-    #load in urlDict
-    urlDict = buildUrlDict() 
+def pageRank(urlDict):
     #loop through 10 iterations
     for _ in range(10):
         #Choose a random start of the document
