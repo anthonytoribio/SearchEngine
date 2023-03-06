@@ -5,7 +5,7 @@ import './HomePage.css'
 function HomePage() {
   return (
     <div>
-        <h1>CONQUEST</h1>
+        <h1 className='home-title'>CONQUEST</h1>
         <SearchBar/>
     </div>
   )

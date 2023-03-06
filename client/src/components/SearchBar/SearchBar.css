@@ -26,6 +26,7 @@
     cursor: pointer;
     right: 5%;
     width: 5%;
+    transition: all ease 0.25s;
 }
 
 .input-container button:hover {
