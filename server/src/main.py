@@ -69,6 +69,18 @@ def parse(file: str, id: int) -> Document:
     doc = Document(id, tfFreqDict, f["url"])
     return doc 
 
+def buildUrlDict():
+    parent_dir = os.path.dirname(os.path.realpath(__file__))
+    file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
+    documentDict = pickle.load(file)
+    
+    urlDict = defaultdict(str)
+    for docid, doc in documentDict.items():
+        urlDict[docid] = doc.docUrl
+    
+    return urlDict
+
+
 
 
 
@@ -212,6 +224,8 @@ def main():
     #Load the documentDict
     file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
     documentDict = pickle.load(file)
+    
+    urlDict = buildUrlDict()
 
 
 
