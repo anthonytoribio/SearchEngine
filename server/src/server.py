@@ -2,7 +2,7 @@ from flask import Flask
 
 app = Flask(__name__)
 @app.route("/")
-def poop():
+def test1():
     return 'anthony'
 
 @app.route("/test")
