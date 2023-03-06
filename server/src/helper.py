@@ -233,6 +233,15 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)
         
 
+def build_children_and_parents(url_dict, doc_dict):
+    for doc_id, doc in doc_dict.items():
+        for url in doc.out_urls:
+            if url in url_dict:
+                cur_url_doc_id = url_dict[url]
+                doc_dict[cur_url_doc_id].parents.append(doc_id)
+                doc.children.append(cur_url_doc_id)
+
+
 
 if __name__=="__main__":
     # test1 = open(os.path.join(PARENTDIRECTORY, "data/test1.txt"), 'r')

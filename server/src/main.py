@@ -25,6 +25,10 @@ def parse(file: str, id: int) -> Document:
     f = open(file, 'r')
     f = json.load(f)
     soup = BeautifulSoup(f["content"], features="html.parser")
+    
+    #get all the urls we see in this document
+    hrefs = [a.get('href') for a in soup.find_all('a')]
+    
     freqDict = defaultdict(int)
     #totalWords = len(soup.get_text().split())
     # Assigning a weight of 4 for all words in the title tag
@@ -33,7 +37,7 @@ def parse(file: str, id: int) -> Document:
         titleWords = [SNOWBALL.stem(word.strip()) for word in tokenize(soup.find("title").text.split())]
         for titleWord in titleWords:
             freqDict[titleWord] += 1
-        
+
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
@@ -67,7 +71,7 @@ def parse(file: str, id: int) -> Document:
         #the first value is the weighted frequency of the word and the second value is the frequency of the word
         tfFreqDict[key] = (weightDict[key], freqDict[key])
     # instantiate Document -> Document(id, tfFreqDict, url)
-    doc = Document(id, tfFreqDict, f["url"])
+    doc = Document(id, tfFreqDict, f["url"], hrefs)
     return doc 
 
 def buildUrlDict():
@@ -77,7 +81,7 @@ def buildUrlDict():
     
     urlDict = defaultdict(str)
     for docid, doc in documentDict.items():
-        urlDict[docid] = doc.docUrl
+        urlDict[doc.docUrl] = docid
     
     return urlDict
 
