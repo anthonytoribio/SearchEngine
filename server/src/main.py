@@ -66,6 +66,8 @@ def parse(file: str, id: int) -> Document:
     return doc 
 
 
+
+
 def buildIndex():
     id = 0 #id for docs (updates for each new doc)
     indexer = defaultdict(list) #maps stem words to doc ids
