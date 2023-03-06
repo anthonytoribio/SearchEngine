@@ -1,0 +1,12 @@
+.to-home-page {
+    color: white;
+}
+
+.to-home-page h1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 2vh;
+    padding-left: 5vh;
+    transition: all ease 0.25s;
+}
