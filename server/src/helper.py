@@ -201,6 +201,9 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
     sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
+    for x in sorted_query:
+        print(outdexer[x][2])
+    #print(sorted_query)
     query_len = len(processed_query)
     
     #This part is to perform heuristics to shrink the number of urls we need to compare
@@ -220,9 +223,12 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
             if term not in tf_dict:
                 continue
             else:
+                if tf_dict[term][1] == 0:
+                    tf_dict[term]= (tf_dict[term][0], 1)
+                                
                 score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
                 score_dict[int(doc_id)] += score
-    
+    #print(score_dict)
     retrival_list = list(retrival_sets)
     return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)
         

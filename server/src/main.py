@@ -207,12 +207,15 @@ def main():
     file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
     documentDict = pickle.load(file)
 
+
+
     while 1:
         query = input("Type in a query:\n")
         if query.lower().strip() == "exit":
             return
         query = query.split()
         s = ranked_retrieval(query, FILE, outdexer, documentDict, 30)
+        print(len(s))
         print("Here are your search results: ")
         for doc_id in s:
             print(documentDict[int(doc_id)].docUrl)
