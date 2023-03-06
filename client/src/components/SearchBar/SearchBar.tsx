@@ -22,7 +22,7 @@ function SearchBar() {
                     value={query} 
                     onChange={(q) => setQuery(q.target.value)}
                 />
-                <button><FaSearch style={{fontSize: '20px'}}/></button>
+                <button style={{paddingBottom: '6px'}}><FaSearch style={{fontSize: '20px'}}/></button>
                 {/* <div>{query}</div> */}
             </div>
         </form>
