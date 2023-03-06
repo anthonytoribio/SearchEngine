@@ -7,6 +7,7 @@ import json
 from collections import defaultdict
 from helper import *
 import platform
+import random
 
 
 #GLOBAL Vars:
@@ -80,6 +81,16 @@ def buildUrlDict():
     
     return urlDict
 
+
+def pageRank():
+    #load in urlDict
+    urlDict = buildUrlDict() 
+    #loop through 10 iterations
+    for _ in range(10):
+        #Choose a random start of the document
+        for doc in urlDict.values():
+            doc.update_pagerank(0.05, NUM_DOCS)
+    
 
 
 
