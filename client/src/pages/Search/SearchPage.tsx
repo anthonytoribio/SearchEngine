@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import './SearchPage.css';
 
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -9,6 +10,24 @@ function SearchPage() {
 
     let query = useLocation();
 
+
+    const [data, setData] = useState('')
+    
+    
+    useEffect(() => {
+        fetch("/test").then(
+            res => res.json()
+        ).then(
+            data => {
+                setData(data)
+                console.log(data)
+            }
+        )
+    }, [])
+
+
+    var ourData : any = data;
+    console.log(ourData)
     return (
         <div>
             <a className='to-home-page' href='/'>
@@ -19,18 +38,20 @@ function SearchPage() {
               <SearchBar/>
             </div>
 
-            <div style={{paddingTop:'15vh', color:'white', justifyContent:'center', display:'flex'}}>
+            {/* <div style={{paddingTop:'15vh', color:'white', justifyContent:'center', display:'flex'}}>
                 {query.state}
-            </div>
+            </div> */}
 
+            {
+                ourData.map((d: { url: any; description: any}) => (<p key={d.url}>{d.url}{d.description}</p>))
+            }
 
-
+          
 
             
-        </div>
-        
+            
+        </div>  
     )
-    {/* <div style={{color:'white'}}>{query.state}</div> */}
 }
 
 export default SearchPage
