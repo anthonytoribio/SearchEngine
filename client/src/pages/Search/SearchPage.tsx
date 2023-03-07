@@ -10,24 +10,24 @@ function SearchPage() {
 
     let query = useLocation();
 
-    const [data, setdata] = useState('')
-      useEffect(() => {
-        fetch("/test/help", {method:"POST",
-        mode: "cors",
-        headers:{
-          "Content-Type":"application/json; charset=UTF-8"
-        },
-        body: JSON.stringify(query)
-      }).then((res) =>
-        res.json().then(data => {setdata(data)
-        // console.log(data)
-      })
-        )
+    // const [data, setdata] = useState('')
+    //   useEffect(() => {
+    //     fetch("/test/help", {method:"POST",
+    //     mode: "cors",
+    //     headers:{
+    //       "Content-Type":"application/json; charset=UTF-8"
+    //     },
+    //     body: JSON.stringify(query)
+    //   }).then((res) =>
+    //     res.json().then(data => {setdata(data)
+    //     // console.log(data)
+    //   })
+    //     )
     
-    }, [])
+    // }, [])
 
-    var ourData : any = data;
-    console.log(ourData)   
+    // var ourData : any = data;
+    // console.log(ourData)   
 
     return (
         <div>
@@ -39,15 +39,15 @@ function SearchPage() {
               <SearchBar/>
             </div>
 
-            {/* <div style={{paddingTop:'15vh', color:'white', justifyContent:'center', display:'flex'}}>
+            <div style={{paddingTop:'15vh', color:'white', justifyContent:'center', display:'flex'}}>
                 {query.state}
-            </div> */}
+            </div>
 
-            <div style={{color: 'white'}}>
+            {/* <div style={{color: 'white'}}>
                 {
                     ourData.map((d: { url: any; description: any}) => (<p key={d.url}>{d.url}{d.description}</p>))
                 }
-            </div>
+            </div> */}
             
         </div>
         
