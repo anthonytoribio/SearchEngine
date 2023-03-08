@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { Card } from 'react-bootstrap';
 import './SearchPage.css';
 
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -9,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 function SearchPage() {
 
     let query = useLocation();
+    // console.log(query)
 
     const [data, setdata] = useState('')
       useEffect(() => {
@@ -20,7 +22,7 @@ function SearchPage() {
         body: JSON.stringify(query)
       }).then((res) =>
         res.json().then(data => {setdata(data)
-        // console.log(data)
+        console.log(data)
       })
         )
     
@@ -39,20 +41,34 @@ function SearchPage() {
               <SearchBar/>
             </div>
 
-            <div style={{paddingTop:'15vh', color:'white', justifyContent:'center', display:'flex'}}>
-                {query.state}
-            </div>
-
-            {/* <div style={{color: 'white'}}>
+            <div className='all-cards' style={{paddingTop:'15px'}}>
                 {
-                    ourData.map((d: { url: any; description: any}) => (<p key={d.url}>{d.url}{d.description}</p>))
+                    (typeof ourData === 'string') ? (
+                        <p>UNDEFINED</p>
+                    ) : (
+                    ourData.map((d:any,i:any) => (
+                        
+                        <div className='card-container' key={i}>
+                            <Card style={{ width: '100%' }} bg='light' text='dark'>
+                                <Card.Body>
+                                    <Card.Title>PLACEHOLDER</Card.Title>
+                                    <Card.Subtitle className="mb-2 text-muted">
+                                        <Card.Link href="#">{d.url}</Card.Link>
+                                    </Card.Subtitle>
+                                    <Card.Text>{d.description}</Card.Text>
+                                    
+                            
+                                </Card.Body>
+                            </Card>    
+                        </div>               
+                    )))
                 }
-            </div> */}
-            
+            </div>
+         
         </div>
         
     )
-    {/* <div style={{color:'white'}}>{query.state}</div> */}
+
 }
 
 export default SearchPage
