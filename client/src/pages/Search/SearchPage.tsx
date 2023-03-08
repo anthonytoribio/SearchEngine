@@ -10,24 +10,24 @@ function SearchPage() {
 
     let query = useLocation();
 
-    // const [data, setdata] = useState('')
-    //   useEffect(() => {
-    //     fetch("/test/help", {method:"POST",
-    //     mode: "cors",
-    //     headers:{
-    //       "Content-Type":"application/json; charset=UTF-8"
-    //     },
-    //     body: JSON.stringify(query)
-    //   }).then((res) =>
-    //     res.json().then(data => {setdata(data)
-    //     // console.log(data)
-    //   })
-    //     )
+    const [data, setdata] = useState('')
+      useEffect(() => {
+        fetch("/test/help", {method:"POST",
+        mode: "cors",
+        headers:{
+          "Content-Type":"application/json; charset=UTF-8"
+        },
+        body: JSON.stringify(query)
+      }).then((res) =>
+        res.json().then(data => {setdata(data)
+        // console.log(data)
+      })
+        )
     
-    // }, [])
+    }, [query])
 
-    // var ourData : any = data;
-    // console.log(ourData)   
+    var ourData : any = data;
+    console.log(ourData)   
 
     return (
         <div>
