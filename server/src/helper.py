@@ -11,6 +11,7 @@ ALPHANUMERIC = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
     "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1",
     "2", "3", "4", "5", "6", "7", "8", "9", "0"}
 
+
 def tokenize(wordList: '[str]') -> '[str]':
     """
     The function returns a list of strings (tokens) from the original file
@@ -47,6 +48,7 @@ def tokenize(wordList: '[str]') -> '[str]':
     #DEBUG print(tokens)
     return tokens   
 
+
 def Dict_Update(dictionary, words, weight):
     for word in words:
         if word not in dictionary:
@@ -54,6 +56,7 @@ def Dict_Update(dictionary, words, weight):
         else:
             dictionary[word] += weight
     return dictionary
+
 
 def ourSort(thefile, list1, list2) -> None:
     """
@@ -161,7 +164,6 @@ def merge(file1, file2, index:int, final = False):
     return [returnedFile, index + 1]     
 
 
-
 #This function takes a filename and an offset representing the statring byte to read from, it returns a set of words 
 # that are read from the given line  
 def read_set_from_line( filename, offset)  -> set:    
@@ -201,8 +203,6 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
     sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
-    for x in sorted_query:
-        print(outdexer[x][2])
     #print(sorted_query)
     query_len = len(processed_query)
     
@@ -222,10 +222,7 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
             #the formula is weighted_freq * idf_score / length of the document
             if term not in tf_dict:
                 continue
-            else:
-                if tf_dict[term][1] == 0:
-                    tf_dict[term]= (tf_dict[term][0], 1)
-                                
+            else:                
                 score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
                 score_dict[int(doc_id)] += score
     #print(score_dict)

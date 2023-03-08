@@ -7,9 +7,7 @@ import json
 from collections import defaultdict
 from helper import *
 import platform
-import random
-
-
+ 
 #GLOBAL Vars:
 SNOWBALL = SnowballStemmer(language="english")
 CAP = 10000000 #LIMIT of pickle 
@@ -25,6 +23,7 @@ def parse(file: str, id: int) -> Document:
     f = open(file, 'r')
     f = json.load(f)
     soup = BeautifulSoup(f["content"], features="html.parser")
+    title = "Doc: " + str(id)
     
     #get all the urls we see in this document
     hrefs = [a.get('href') for a in soup.find_all('a')]
@@ -37,7 +36,7 @@ def parse(file: str, id: int) -> Document:
         titleWords = [SNOWBALL.stem(word.strip()) for word in tokenize(soup.find("title").text.split())]
         for titleWord in titleWords:
             freqDict[titleWord] += 1
-
+        title = soup.find("title").text
 
     # Getting all words in h1, h2, h3 tags
     h_tags = soup.find_all('h1') + soup.find_all('h2') + soup.find_all('h3')
@@ -71,8 +70,9 @@ def parse(file: str, id: int) -> Document:
         #the first value is the weighted frequency of the word and the second value is the frequency of the word
         tfFreqDict[key] = (weightDict[key], freqDict[key])
     # instantiate Document -> Document(id, tfFreqDict, url)
-    doc = Document(id, tfFreqDict, f["url"], hrefs)
+    doc = Document(id, tfFreqDict, f["url"], hrefs, title, " ".join(all_words[:10]))
     return doc 
+
 
 def buildUrlDict():
     parent_dir = os.path.dirname(os.path.realpath(__file__))
@@ -93,9 +93,6 @@ def pageRank(urlDict):
         for doc in urlDict.values():
             doc.update_pagerank(0.05, NUM_DOCS)
     
-
-
-
 
 def buildIndex():
     id = 0 #id for docs (updates for each new doc)
@@ -206,8 +203,6 @@ def buildIndex():
     json.dump(outdexer, outdexer_json_file, indent=4, separators=(":", ",")) 
 
 
-
-
 def main():
     #this is to stor the indexer and doc_dict
     #TODO: DELETE LATER
@@ -240,17 +235,17 @@ def main():
     
     urlDict = buildUrlDict()
 
-
-
     while 1:
         query = input("Type in a query:\n")
         if query.lower().strip() == "exit":
             return
         query = query.split()
         s = ranked_retrieval(query, FILE, outdexer, documentDict, 30)
-        print(len(s))
+        # print(len(s))
         print("Here are your search results: ")
         for doc_id in s:
             print(documentDict[int(doc_id)].docUrl)
+
+
 if __name__ == "__main__":
     main()

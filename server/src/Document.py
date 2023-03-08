@@ -1,8 +1,10 @@
 class Document:
-    def __init__(self, index,tf_dict, url:str, hrefs):
+    def __init__(self, index,tf_dict, url:str, hrefs, title: str, desc: str):
         self.docid = index
         self.doc_tf_dict = tf_dict
         self.docUrl = url
+        self.title = title
+        self.desc = desc
         self.pagerank = 1.0
         self.parents =[]
         self.children = []
