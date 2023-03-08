@@ -51,11 +51,13 @@ function SearchPage() {
                         <div className='card-container' key={i}>
                             <Card style={{ width: '100%' }} bg='light' text='dark'>
                                 <Card.Body>
-                                    <Card.Title>PLACEHOLDER</Card.Title>
-                                    <Card.Subtitle className="mb-2 text-muted">
-                                        <Card.Link href="#">{d.url}</Card.Link>
+                                    <Card.Title style={{fontSize:'1.5rem', textDecoration:'none'}}>
+                                        <Card.Link href={d.url}>PLACEHOLDER TITLE</Card.Link>
+                                    </Card.Title>
+                                    <Card.Subtitle className="mb-2 text-muted" style={{fontSize:'0.8rem'}}>
+                                        {d.url}
                                     </Card.Subtitle>
-                                    <Card.Text>{d.description}</Card.Text>
+                                    <Card.Text style={{fontSize:'1rem'}}>{d.description}</Card.Text>
                                     
                             
                                 </Card.Body>
