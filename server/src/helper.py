@@ -194,9 +194,13 @@ def boolean_retrieval(query, filename, indexer)->set:
     return s
 
 
-def calculate_idf_factor(term_occur, doc_len):
+def calculate_log_idf_factor(term_occur, doc_len):
     quotient = doc_len / term_occur
     return float(math.log(quotient, 10))
+
+def calculate_log_tf(weighted_freq):
+    return float(1+ math.log(weighted_freq, 10 ))
+
 
 
 def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
@@ -223,8 +227,14 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
             if term not in tf_dict:
                 continue
             else:                
-                score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
+                #score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
+                #print(term[0])
+                score = calculate_log_tf(tf_dict[term][0]) * outdexer[term][2]
                 score_dict[int(doc_id)] += score
+        document_length = sum([ x[1] for x in tf_dict.values()])
+        print(document_length)
+        
+        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (len(sorted_query) * document_length)
     #print(score_dict)
     retrival_list = list(retrival_sets)
     return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)

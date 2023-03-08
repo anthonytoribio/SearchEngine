@@ -179,7 +179,7 @@ def buildIndex():
     line = file.readline()
     while line != '':
         lineList = line.split()
-        outdexer[lineList[0]] = [start, len(lineList)-1, calculate_idf_factor(len(lineList)-1, NUM_DOCS)]
+        outdexer[lineList[0]] = [start, len(lineList)-1, calculate_log_idf_factor(len(lineList)-1, NUM_DOCS)]
         start += len(line)
         if platform.system() == 'Windows':
             start += 1
