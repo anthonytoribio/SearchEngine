@@ -10,3 +10,16 @@
     padding-left: 5vh;
     transition: all ease 0.25s;
 }
+
+.card-title-link {
+    text-decoration: none;
+}
+
+.card-title:hover {
+    text-decoration: line;
+}
+
+.card-title-link:hover {
+    text-decoration: line;
+}
+
