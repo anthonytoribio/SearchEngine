@@ -2,6 +2,8 @@ import os
 from nltk.stem import SnowballStemmer
 import math
 from collections import defaultdict
+import time
+
 
 PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FILE = "FinalIndexer.txt" #String name of the text file that holds the combined indexer
@@ -177,7 +179,7 @@ def read_set_from_line( filename, offset)  -> set:
 #and it returns a set of doc_ids
 def boolean_retrieval(query, filename, indexer)->set:
     #print(tokenize(query))
-    query = [SNOWBALL.stem(word) for word in tokenize(query)]
+    #query = [SNOWBALL.stem(word) for word in tokenize(query)]
     #print(query)
     query = sorted(query, key = lambda x: indexer[x][1])
     s = read_set_from_line(filename, indexer[query[0]][0])
@@ -204,6 +206,7 @@ def calculate_log_tf(weighted_freq):
 
 
 def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
+    start = time.time()
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
     sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
@@ -222,8 +225,12 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     for doc_id in retrival_sets:
         document = documentDict[int(doc_id)]
         tf_dict = document.doc_tf_dict
+        term_score_dict = defaultdict(float)
         for term in sorted_query:
             #the formula is weighted_freq * idf_score / length of the document
+            if term in term_score_dict:
+                score_dict[int(doc_id)] += term_score_dict[term]
+                continue
             if term not in tf_dict:
                 continue
             else:                
@@ -231,12 +238,14 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
                 #print(term[0])
                 score = calculate_log_tf(tf_dict[term][0]) * outdexer[term][2]
                 score_dict[int(doc_id)] += score
+                term_score_dict[term] = score
         document_length = sum([ x[1] for x in tf_dict.values()])
-        print(document_length)
+        #print(document_length)
+        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (query_len * document_length)
         
-        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (len(sorted_query) * document_length)
     #print(score_dict)
     retrival_list = list(retrival_sets)
+    print(time.time() - start)
     return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)
         
 

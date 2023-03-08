@@ -7,6 +7,7 @@ import json
 from collections import defaultdict
 from helper import *
 import platform
+
  
 #GLOBAL Vars:
 SNOWBALL = SnowballStemmer(language="english")
