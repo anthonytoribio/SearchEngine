@@ -195,6 +195,17 @@ def boolean_retrieval(query, filename, indexer)->set:
         
     return s
 
+def buildDocLenDict(documentDict):
+    length_dict = defaultdict(int)
+    for doc_id, document in documentDict.items():
+        tf_dict = document.doc_tf_dict
+        document_length = sum([ x[1] for x in tf_dict.values()])
+        length_dict[int(doc_id)] = document_length
+    print()
+    return length_dict
+        
+
+
 
 def calculate_log_idf_factor(term_occur, doc_len):
     quotient = doc_len / term_occur
@@ -205,7 +216,7 @@ def calculate_log_tf(weighted_freq):
 
 
 
-def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
+def ranked_retrieval(query, filename, outdexer, documentDict, docLenDict, top_k)->set:
     start = time.time()
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
@@ -221,6 +232,7 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
             break
     
     score_dict = defaultdict(float)
+
     #compute the score for each document
     for doc_id in retrival_sets:
         document = documentDict[int(doc_id)]
@@ -239,10 +251,16 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
                 score = calculate_log_tf(tf_dict[term][0]) * outdexer[term][2]
                 score_dict[int(doc_id)] += score
                 term_score_dict[term] = score
-        document_length = sum([ x[1] for x in tf_dict.values()])
         #print(document_length)
-        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (query_len * document_length)
-        
+        #print(docLenDict[9976])
+        # if (docLenDict[doc_id] == 0):
+        #     continue
+        #print(doc_id)
+        #print( query_len * docLenDict[doc_id])
+        #document_length = sum([ x[1] for x in tf_dict.values()])
+
+        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (query_len * docLenDict[int(doc_id)])
+    
     #print(score_dict)
     retrival_list = list(retrival_sets)
     print(time.time() - start)

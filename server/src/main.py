@@ -234,14 +234,32 @@ def main():
     file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
     documentDict = pickle.load(file)
     
-    urlDict = buildUrlDict()
+    #urlDict = buildUrlDict()
+    if (not os.path.isfile(os.path.join(parent_dir, "data/" + "doc_len_dict"))):
+        documentLengthDict = buildDocLenDict(documentDict)
+        docLenDictFile = open(os.path.join(parent_dir, "data/doc_len_dict"), 'wb')
+        pickle.dump(documentLengthDict, docLenDictFile)
+        docLenDictFile.close()
+    docLenDictFile = open(os.path.join(parent_dir, "data/doc_len_dict"), 'rb')
+    documentLengthDict = pickle.load(docLenDictFile)
+    #documentLengthDict = buildDocLenDict(documentDict)
+    
+    # print(documentLengthDict[9976])
+    # print(documentLengthDict[9682])
+    # zero_list = []
+    # for x in documentLengthDict.values():
+    #     if x == 0:
+    #         zero_list.append(x)
+    # print(zero_list)
+
+    
 
     while 1:
         query = input("Type in a query:\n")
         if query.lower().strip() == "exit":
             return
         query = query.split()
-        s = ranked_retrieval(query, FILE, outdexer, documentDict, 30)
+        s = ranked_retrieval(query, FILE, outdexer, documentDict, documentLengthDict, 30)
         # print(len(s))
         print("Here are your search results: ")
         for doc_id in s:
