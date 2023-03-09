@@ -216,12 +216,11 @@ def calculate_log_tf(weighted_freq):
 
 
 
-def ranked_retrieval(query, filename, outdexer, documentDict, docLenDict, top_k)->set:
+def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
     start = time.time()
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
     sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
-    #print(sorted_query)
     query_len = len(processed_query)
     
     #This part is to perform heuristics to shrink the number of urls we need to compare
@@ -251,20 +250,14 @@ def ranked_retrieval(query, filename, outdexer, documentDict, docLenDict, top_k)
                 score = calculate_log_tf(tf_dict[term][0]) * outdexer[term][2]
                 score_dict[int(doc_id)] += score
                 term_score_dict[term] = score
-        #print(document_length)
-        #print(docLenDict[9976])
-        # if (docLenDict[doc_id] == 0):
-        #     continue
-        #print(doc_id)
-        #print( query_len * docLenDict[doc_id])
-        #document_length = sum([ x[1] for x in tf_dict.values()])
 
-        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (query_len * docLenDict[int(doc_id)])
+        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)
     
-    #print(score_dict)
     retrival_list = list(retrival_sets)
+    #DEBUG
+    res = sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True) 
     print(time.time() - start)
-    return sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True)
+    return res
         
 
 def build_children_and_parents(url_dict, doc_dict):

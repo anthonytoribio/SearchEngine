@@ -27,7 +27,7 @@ def get_query():
     if request.method == "POST":
         return_lst = []
         query = request.json["state"]
-        doc_ids = ranked_retrieval(query, FILE, outdexer, documentDict, K)
+        doc_ids = ranked_retrieval(query.split(), FILE, outdexer, documentDict, K)
         for id in doc_ids:
             doc = documentDict[int(id)]
             return_lst.append({"title":doc.title, "url":doc.docUrl, "description":doc.desc})

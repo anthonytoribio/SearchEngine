@@ -52,7 +52,7 @@ function SearchPage() {
                             <Card style={{ width: '100%' }} bg='light' text='dark'>
                                 <Card.Body>
                                     <Card.Title className='card-title' style={{fontSize:'1.5rem'}}>
-                                        <Card.Link className='card-title-link' href={d.url}>PLACEHOLDER TITLE</Card.Link>
+                                        <Card.Link className='card-title-link' href={d.url}>{d.title}</Card.Link>
                                     </Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted" style={{fontSize:'0.8rem'}}>
                                         {d.url}
