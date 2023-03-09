@@ -251,7 +251,8 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
                 score_dict[int(doc_id)] += score
                 term_score_dict[term] = score
 
-        score_dict[int(doc_id)] =  score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)
+        score_dict[int(doc_id)] =  (score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)) + (documentDict[int(doc_id)].pagerank)
+        #print(documentDict[int(doc_id)].pagerank)
     
     retrival_list = list(retrival_sets)
     #DEBUG

@@ -88,12 +88,38 @@ def buildUrlDict():
 
 
 def pageRank(urlDict):
-    #loop through 10 iterations
-    for _ in range(10):
-        #Choose a random start of the document
-        for doc in urlDict.values():
-            doc.update_pagerank(0.05, NUM_DOCS)
+    parent_dir = os.path.dirname(os.path.realpath(__file__))
+    file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
+    documentDict = pickle.load(file)
+
+    build_children_and_parents(urlDict, documentDict)
+
+    #loop through 4 iterations
+    for _ in range(4):
+        #Go through each doc
+        for docid in urlDict.values():
+            documentDict[docid].update_pagerank(0.05, len(documentDict), documentDict)
     
+    doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
+    pickle.dump(documentDict, doc_dict_file)
+    doc_dict_file.close() 
+
+
+def resetRank():
+    parent_dir = os.path.dirname(os.path.realpath(__file__))
+    file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
+    documentDict = pickle.load(file) 
+
+    for doc in documentDict.values():
+        doc.pagerank = 1
+        doc.parents = []
+        doc.children = []
+    
+    doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
+    pickle.dump(documentDict, doc_dict_file)
+    doc_dict_file.close() 
+    
+
 
 def buildIndex():
     id = 0 #id for docs (updates for each new doc)
@@ -187,7 +213,7 @@ def buildIndex():
         line = file.readline()
 
     file.close()
-    print("NUMBER OF DOCUMENTS IS: ", id + 1)
+
     #store outdexer in a pickle file
     outdexer_file = open(os.path.join(parent_dir, "data/outdexer"), 'wb')
     pickle.dump(outdexer, outdexer_file)
@@ -205,20 +231,6 @@ def buildIndex():
 
 
 def main():
-    #this is to stor the indexer and doc_dict
-    #TODO: DELETE LATER
-    # print("THE # OF UNIQUE STEMMED WORDS ARE: ", len(indexer))
-    # indexer_file = open(os.path.join(parent_dir, "data/indexer"), 'wb')
-    # pickle.dump(indexer, indexer_file)
-    # indexer_file.close()
-    
-    # doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
-    # pickle.dump(indexer, doc_dict_file)
-    # doc_dict_file.close()
-    
-    # parent_dir = os.path.dirname(os.path.realpath(__file__))
-    # indexer_json_file = open(os.path.join(parent_dir, "data/indexer.json"), 'w')
-    # json.dump(indexer, indexer_json_file, indent=4, separators=(":", ","))
     parent_dir = os.path.dirname(os.path.realpath(__file__))
 
     #check if the indexer is already created if not then create
@@ -226,6 +238,15 @@ def main():
         print("CREATING INDEXER......")
         buildIndex()
         print("INDEX HAS BEEN CREATED \n")
+
+    #Uncomment it to run pagerank (only run this code once. After running once make sure to comment the code out)
+    #If you want to reset rank change True to False
+    # urlDict = buildUrlDict()
+    # if (True):
+    #     pageRank(urlDict)
+    # else:
+    #     resetRank()
+
     #load the outdexer and documentdict
     file = open(os.path.join(parent_dir, "data/outdexer"), 'rb')
     outdexer = pickle.load(file)
@@ -234,23 +255,6 @@ def main():
     file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
     documentDict = pickle.load(file)
     
-    #urlDict = buildUrlDict()
-    # if (not os.path.isfile(os.path.join(parent_dir, "data/" + "doc_len_dict"))):
-    #     documentLengthDict = buildDocLenDict(documentDict)
-    #     docLenDictFile = open(os.path.join(parent_dir, "data/doc_len_dict"), 'wb')
-    #     pickle.dump(documentLengthDict, docLenDictFile)
-    #     docLenDictFile.close()
-    # docLenDictFile = open(os.path.join(parent_dir, "data/doc_len_dict"), 'rb')
-    # documentLengthDict = pickle.load(docLenDictFile)
-    #documentLengthDict = buildDocLenDict(documentDict)
-    
-    # print(documentLengthDict[9976])
-    # print(documentLengthDict[9682])
-    # zero_list = []
-    # for x in documentLengthDict.values():
-    #     if x == 0:
-    #         zero_list.append(x)
-    # print(zero_list)
 
     while 1:
         query = input("Type in a query:\n")

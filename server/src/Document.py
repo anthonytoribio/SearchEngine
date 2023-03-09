@@ -12,8 +12,8 @@ class Document:
         self.out_urls = hrefs
         
         
-    def update_pagerank(self, randomness, document_length):
+    def update_pagerank(self, randomness, document_length, docDict):
         in_neighbors = self.parents
-        pagerank_sum = sum((node.pagerank / len(node.children)) for node in in_neighbors)
+        pagerank_sum = sum((docDict[node].pagerank / len(docDict[node].children)) for node in in_neighbors)
         random_walk = randomness / document_length
         self.pagerank = random_walk + (1-randomness) * pagerank_sum
