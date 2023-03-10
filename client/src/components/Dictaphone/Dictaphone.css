@@ -1,0 +1,10 @@
+.speech-button {
+    transition: all ease 0.25s;
+    background-color: white;
+    height: 2.5rem;
+    border-radius: 0 1rem 1rem 0; 
+}
+
+.speech-button:hover {
+    color: rgb(0, 128, 255)
+}

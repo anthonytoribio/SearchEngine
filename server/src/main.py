@@ -254,7 +254,7 @@ def main():
     documentDict = pickle.load(file)
     
     pageRank_list = []
-    for docid, doc in documentDict:
+    for docid, doc in documentDict.items():
         pageRank_list.append(doc.pagerank)
     pagerank_file = open(os.path.join(parent_dir, "data/pagerank_file"), 'wb')
     pickle.dump(pageRank_list, pagerank_file)

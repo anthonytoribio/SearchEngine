@@ -6,9 +6,9 @@ import './SearchPage.css';
 import SearchBar from '../../components/SearchBar/SearchBar';
 
 import { useLocation } from 'react-router-dom';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-function SearchPage() {
-
+function SearchPage() {  
     let query = useLocation();
     // console.log(query)
 
@@ -37,9 +37,8 @@ function SearchPage() {
     ourData = ourData.slice(0,-1)
     urlCount = ourData.length;
 
-    console.log(queryTime)
-
-
+    // console.log(queryTime)
+    // console.log(ourData)
 
     return (
         <div>
@@ -51,7 +50,7 @@ function SearchPage() {
               <SearchBar/>
             </div>
 
-            <div className='result-stats' style={{color: 'white', paddingTop:'0.5%', paddingLeft:'4%', fontSize:'0.8rem'}}>
+            <div className='result-stats' style={{color: 'white', paddingTop:'0.5%', paddingLeft:'2.6%', fontSize:'0.8rem', fontStyle:'italic'}}>
                 {
                     (typeof queryTime === 'undefined') ? (
                         <p>UNDEFINED</p>
@@ -79,8 +78,6 @@ function SearchPage() {
                                         {d.url}
                                     </Card.Subtitle>
                                     <Card.Text style={{fontSize:'1rem'}}>{d.description}</Card.Text>
-                                    
-                            
                                 </Card.Body>
                             </Card>    
                         </div>               
