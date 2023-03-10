@@ -22,14 +22,22 @@ function SearchPage() {
         body: JSON.stringify(query)
       }).then((res) =>
         res.json().then(data => {setdata(data)
-        console.log(data)
+        // console.log(data)
       })
         )
     
     }, [query])
 
-    var ourData : any = data;
-    console.log(ourData)   
+    var ourData : any;
+    var queryTime : number;
+    var urlCount : number;
+
+    ourData = data;
+    queryTime = ourData.at(-1)
+    ourData = ourData.slice(0,-1)
+    urlCount = ourData.length;
+
+
 
     return (
         <div>
@@ -40,6 +48,11 @@ function SearchPage() {
             <div style={{paddingTop:'3.2vh'}}>
               <SearchBar/>
             </div>
+
+            <div className='result-stats' style={{color: 'white', paddingTop:'0.5%', paddingLeft:'2.6%', fontSize:'0.8rem'}}>
+                About {urlCount} results ({queryTime.toFixed(3)} seconds)
+            </div>
+
 
             <div className='all-cards' style={{paddingTop:'15px'}}>
                 {
