@@ -37,6 +37,8 @@ function SearchPage() {
     ourData = ourData.slice(0,-1)
     urlCount = ourData.length;
 
+    console.log(queryTime)
+
 
 
     return (
@@ -49,8 +51,14 @@ function SearchPage() {
               <SearchBar/>
             </div>
 
-            <div className='result-stats' style={{color: 'white', paddingTop:'0.5%', paddingLeft:'2.6%', fontSize:'0.8rem'}}>
-                About {urlCount} results ({queryTime.toFixed(3)} seconds)
+            <div className='result-stats' style={{color: 'white', paddingTop:'0.5%', paddingLeft:'4%', fontSize:'0.8rem'}}>
+                {
+                    (typeof queryTime === 'undefined') ? (
+                        <p>UNDEFINED</p>
+                    ) : (
+                        <p>Found {urlCount} results in {queryTime.toFixed(3)} seconds</p>
+                    )
+                }
             </div>
 
 
