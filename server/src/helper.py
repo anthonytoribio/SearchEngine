@@ -257,9 +257,10 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k, pagerank_mo
 
         score_dict[int(doc_id)] =  (score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)) #+ (documentDict[int(doc_id)].pagerank)
         #print(documentDict[int(doc_id)].pagerank)
-    #mean_value = statistics.mean(score_dict.values())  
+    mean_value = statistics.mean(score_dict.values())  
+    print(mean_value)
     for doc_id, value in score_dict.items():
-        score_dict[doc_id] = sigmoid(value) + 0.2 * sigmoid(documentDict[doc_id].pagerank / pagerank_mode)     
+        score_dict[doc_id] = sigmoid(value/mean_value) + 0.4 * (documentDict[doc_id].pagerank / pagerank_mode)     
     
     retrival_list = list(retrival_sets)
     #DEBUG
