@@ -29,7 +29,7 @@ def get_query():
         start = time.time()
         return_lst = []
         query = request.json["state"]
-        doc_ids = ranked_retrieval(query.split(), FILE, outdexer, documentDict, K)
+        doc_ids = ranked_retrieval(query.split(), FILE, outdexer, documentDict, K, 0.88)
         for id in doc_ids:
             doc = documentDict[int(id)]
             return_lst.append({"title":doc.title, "url":doc.docUrl, "description":doc.desc})
