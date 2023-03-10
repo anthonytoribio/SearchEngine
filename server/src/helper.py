@@ -3,6 +3,7 @@ from nltk.stem import SnowballStemmer
 import math
 from collections import defaultdict
 import time
+import statistics
 
 
 PARENTDIRECTORY = os.path.dirname(os.path.realpath(__file__))
@@ -216,9 +217,10 @@ def calculate_log_idf_factor(term_occur, doc_len):
 def calculate_log_tf(weighted_freq):
     return float(1+ math.log(weighted_freq, 10 ))
 
+def sigmoid(x):
+  return 1 / (1 + math.exp(-x))
 
-
-def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
+def ranked_retrieval(query, filename, outdexer, documentDict, top_k, pagerank_mode)->set:
     start = time.time()
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
     
@@ -253,8 +255,11 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k)->set:
                 score_dict[int(doc_id)] += score
                 term_score_dict[term] = score
 
-        score_dict[int(doc_id)] =  (score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)) + (documentDict[int(doc_id)].pagerank)
+        score_dict[int(doc_id)] =  (score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)) #+ (documentDict[int(doc_id)].pagerank)
         #print(documentDict[int(doc_id)].pagerank)
+    #mean_value = statistics.mean(score_dict.values())  
+    for doc_id, value in score_dict.items():
+        score_dict[doc_id] = sigmoid(value) + 0.2 * sigmoid(documentDict[doc_id].pagerank / pagerank_mode)     
     
     retrival_list = list(retrival_sets)
     #DEBUG
