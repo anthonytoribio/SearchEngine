@@ -4,7 +4,7 @@
 In this project we implemented a search engine from scratch. This search engine includes
 an indexer, a boolean retrieval model, ranking algorithm, and user interface.
 
-### STEP 1: Install Independencies
+### STEP 1: Install Dependencies
 Make sure to create a virtual env in server/src/
 
 To run the program you must have the following installed:
