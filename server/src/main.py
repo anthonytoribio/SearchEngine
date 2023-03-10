@@ -8,6 +8,7 @@ from collections import defaultdict
 from helper import *
 import platform
 from matplotlib import pyplot as plt
+import statistics
 
  
 #GLOBAL Vars:
@@ -59,6 +60,9 @@ def parse(file: str, id: int) -> Document:
     # Getting all words in the document
     all_text = [word for word in soup.stripped_strings]
     all_words = [SNOWBALL.stem(word) for text in all_text for word in text.split()]
+
+    if (len(all_words) > 0):
+        title = all_words[0:4]
 
     all_words = tokenize(all_words)
     # Assigning a weight of 1 for all other words in the document 
@@ -242,11 +246,11 @@ def main():
 
     #Uncomment it to run pagerank (only run this code once. After running once make sure to comment the code out)
     #If you want to reset rank change True to False
-    urlDict = buildUrlDict()
-    if (True):
-        pageRank(urlDict)
-    else:
-        resetRank()
+    # urlDict = buildUrlDict()
+    # if (True):
+    #     pageRank(urlDict)
+    # else:
+    #     resetRank()
         
     #This code is to collect and store data for all document's page rank values
     #Load the documentDict
@@ -259,34 +263,35 @@ def main():
     pagerank_file = open(os.path.join(parent_dir, "data/pagerank_file"), 'wb')
     pickle.dump(pageRank_list, pagerank_file)
     pagerank_file.close() 
-    
-    plt.hist(pageRank_list, bins=range(int(min(pageRank_list)), int(max(pageRank_list)) + 2, 1))
-    plt.show() 
-    
-    
+    rankMode = statistics.mode(pageRank_list)
+    # plt.hist(pageRank_list, bins=100, range=(0, 0.1))
+    # plt.show() 
     
     
     
-
-    # #load the outdexer and documentdict
-    # file = open(os.path.join(parent_dir, "data/outdexer"), 'rb')
-    # outdexer = pickle.load(file)
-
-    # #Load the documentDict
-    # file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
-    # documentDict = pickle.load(file)
+    
     
 
-    # while 1:
-    #     query = input("Type in a query:\n")
-    #     if query.lower().strip() == "exit":
-    #         return
-    #     query = query.split()
-    #     s = ranked_retrieval(query, FILE, outdexer, documentDict, 30)
-    #     # print(len(s))
-    #     print("Here are your search results: ")
-    #     for doc_id in s:
-    #         print(documentDict[int(doc_id)].docUrl)
+    #load the outdexer and documentdict
+    file = open(os.path.join(parent_dir, "data/outdexer"), 'rb')
+    outdexer = pickle.load(file)
+
+    #Load the documentDict
+    file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
+    documentDict = pickle.load(file)
+    
+
+    while 1:
+        query = input("Type in a query:\n")
+        if query.lower().strip() == "exit":
+            return
+        query = query.split()
+        s = ranked_retrieval(query, FILE, outdexer, documentDict, 30, rankMode)
+        #s = boolean_retrieval(query, FILE, outdexer)
+        # print(len(s))
+        print("Here are your search results: ")
+        for doc_id in s:
+            print(documentDict[int(doc_id)].docUrl)
 
 
 if __name__ == "__main__":
