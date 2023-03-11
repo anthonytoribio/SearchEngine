@@ -15,6 +15,17 @@ class Document:
         
     def update_pagerank(self, randomness, document_length, docDict):
         in_neighbors = self.parents
-        pagerank_sum = sum([(docDict[node].pagerank / len(docDict[node].children)) for node in in_neighbors])
+        running_sum = 0
+        for n in in_neighbors:
+            n_page = docDict[n].pagerank
+            nChildLen = len(docDict[n].children)
+            if nChildLen == 0:
+                nChildLen = 1
+            running_sum += n_page / nChildLen
+
+        if len(in_neighbors) == 0:
+            self.pagerank = 0
+            return
+
         random_walk = randomness / document_length
-        self.pagerank = random_walk + (1-randomness) * pagerank_sum
+        self.pagerank = random_walk + (1-randomness) * running_sum

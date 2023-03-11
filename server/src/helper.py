@@ -2,7 +2,6 @@ import os
 from nltk.stem import SnowballStemmer
 import math
 from collections import defaultdict
-import time
 import statistics
 
 
@@ -204,11 +203,8 @@ def buildDocLenDict(documentDict):
         tf_dict = document.doc_tf_dict
         document_length = sum([ x[1] for x in tf_dict.values()])
         length_dict[int(doc_id)] = document_length
-    print()
     return length_dict
         
-
-
 
 def calculate_log_idf_factor(term_occur, doc_len):
     quotient = doc_len / term_occur
@@ -221,10 +217,12 @@ def sigmoid(x):
   return 1 / (1 + math.exp(-x))
 
 def ranked_retrieval(query, filename, outdexer, documentDict, top_k, pagerank_mode)->set:
-    start = time.time()
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
+    try:
+        sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
+    except KeyError:
+        return set()
     
-    sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
     query_len = len(processed_query)
     
     #This part is to perform heuristics to shrink the number of urls we need to compare
@@ -249,23 +247,24 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k, pagerank_mo
             if term not in tf_dict:
                 continue
             else:                
-                #score = tf_dict[term][0] * outdexer[term][2] / tf_dict[term][1]
-                #print(term[0])
                 score = calculate_log_tf(tf_dict[term][0]) * outdexer[term][2]
                 score_dict[int(doc_id)] += score
                 term_score_dict[term] = score
 
         score_dict[int(doc_id)] =  (score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)) #+ (documentDict[int(doc_id)].pagerank)
-        #print(documentDict[int(doc_id)].pagerank)
+
     mean_value = statistics.mean(score_dict.values())  
-    print(mean_value)
+    pagerank_factor_dict = {}
     for doc_id, value in score_dict.items():
-        score_dict[doc_id] = sigmoid(value/mean_value) + 0.4 * (documentDict[doc_id].pagerank / pagerank_mode)     
+        if(documentDict[doc_id].pagerank == 0):
+            pagerank_factor = 0
+        else:
+            pagerank_factor = 0.4 * max(0, sigmoid(documentDict[doc_id].pagerank - pagerank_mode))  
+        score_dict[doc_id] = sigmoid(value/mean_value) + pagerank_factor
+        pagerank_factor_dict[int(doc_id)] = pagerank_factor
     
     retrival_list = list(retrival_sets)
-    #DEBUG
     res = sorted(retrival_list[:top_k], key= lambda x:score_dict[x], reverse=True) 
-    print(time.time() - start)
     return res
         
 

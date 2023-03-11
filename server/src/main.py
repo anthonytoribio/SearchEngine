@@ -7,8 +7,8 @@ import json
 from collections import defaultdict
 from helper import *
 import platform
-from matplotlib import pyplot as plt
 import statistics
+import copy
 
  
 #GLOBAL Vars:
@@ -61,8 +61,8 @@ def parse(file: str, id: int) -> Document:
     all_text = [word for word in soup.stripped_strings]
     all_words = [SNOWBALL.stem(word) for text in all_text for word in text.split()]
 
-    if (len(all_words) > 0):
-        title = all_words[0:4]
+    if (len(all_words) > 0 and title.split()[0] != "Doc:"):
+        title = " ".join(all_words[0:4])
 
     all_words = tokenize(all_words)
     # Assigning a weight of 1 for all other words in the document 
@@ -99,11 +99,12 @@ def pageRank(urlDict):
 
     build_children_and_parents(urlDict, documentDict)
 
-    #loop through 4 iterations
-    for _ in range(100):
+    #loop through 10 iterations
+    for _ in range(10):
         #Go through each doc
+        prevDoc = copy.deepcopy(documentDict)
         for docid in urlDict.values():
-            documentDict[docid].update_pagerank(0.05, len(documentDict), documentDict)
+            documentDict[docid].update_pagerank(0.05, len(documentDict), prevDoc)
     
     doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'wb')
     pickle.dump(documentDict, doc_dict_file)
@@ -251,6 +252,7 @@ def main():
     #     pageRank(urlDict)
     # else:
     #     resetRank()
+    #     return
         
     #This code is to collect and store data for all document's page rank values
     #Load the documentDict
@@ -259,17 +261,12 @@ def main():
     
     pageRank_list = []
     for docid, doc in documentDict.items():
-        pageRank_list.append(doc.pagerank)
+        if doc.pagerank != 0:
+            pageRank_list.append(doc.pagerank)
     pagerank_file = open(os.path.join(parent_dir, "data/pagerank_file"), 'wb')
     pickle.dump(pageRank_list, pagerank_file)
     pagerank_file.close() 
-    rankMode = statistics.mode(pageRank_list)
-    # plt.hist(pageRank_list, bins=100, range=(0, 0.1))
-    # plt.show() 
-    
-    
-    
-    
+    rankMode = statistics.mean(pageRank_list)
     
 
     #load the outdexer and documentdict
@@ -287,8 +284,7 @@ def main():
             return
         query = query.split()
         s = ranked_retrieval(query, FILE, outdexer, documentDict, 30, rankMode)
-        #s = boolean_retrieval(query, FILE, outdexer)
-        # print(len(s))
+
         print("Here are your search results: ")
         for doc_id in s:
             print(documentDict[int(doc_id)].docUrl)
