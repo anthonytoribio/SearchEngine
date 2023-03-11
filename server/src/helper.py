@@ -218,8 +218,11 @@ def sigmoid(x):
 
 def ranked_retrieval(query, filename, outdexer, documentDict, top_k, pagerank_mode)->set:
     processed_query = [SNOWBALL.stem(word) for word in tokenize(query)]
+    try:
+        sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
+    except KeyError:
+        return set()
     
-    sorted_query = sorted(processed_query, key=lambda x: outdexer[x][2], reverse=True)
     query_len = len(processed_query)
     
     #This part is to perform heuristics to shrink the number of urls we need to compare
@@ -249,7 +252,7 @@ def ranked_retrieval(query, filename, outdexer, documentDict, top_k, pagerank_mo
                 term_score_dict[term] = score
 
         score_dict[int(doc_id)] =  (score_dict[int(doc_id)] / (query_len * documentDict[int(doc_id)].length)) #+ (documentDict[int(doc_id)].pagerank)
-        
+
     mean_value = statistics.mean(score_dict.values())  
     pagerank_factor_dict = {}
     for doc_id, value in score_dict.items():
