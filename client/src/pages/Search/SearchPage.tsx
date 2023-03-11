@@ -10,8 +10,8 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 
 function SearchPage() {  
     let query = useLocation();
-    // console.log(query)
 
+    // fetches our query results from backend
     const [data, setdata] = useState('')
       useEffect(() => {
         fetch("/test/help", {method:"POST",
@@ -22,7 +22,6 @@ function SearchPage() {
         body: JSON.stringify(query)
       }).then((res) =>
         res.json().then(data => {setdata(data)
-        // console.log(data)
       })
         )
     
@@ -36,9 +35,6 @@ function SearchPage() {
     queryTime = ourData.at(-1)
     ourData = ourData.slice(0,-1)
     urlCount = ourData.length;
-
-    // console.log(queryTime)
-    // console.log(ourData)
 
     return (
         <div>

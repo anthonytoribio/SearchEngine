@@ -8,19 +8,6 @@ import SearchPage from './pages/Search/SearchPage';
 import SearchBar from './components/SearchBar/SearchBar';
 
 function App() {
-  // const [data, setdata] = useState({
-  //   x: "",
-  //   y: ""
-
-  // })
-  // useEffect(() => {
-  //   fetch("/test").then((res) =>
-  //   res.json().then(data => {setdata(data)
-  //   console.log(data)
-  // })
-  //   )
-
-  // }, [])
 
   return (
     <div>

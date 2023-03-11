@@ -12,16 +12,7 @@ outdexer = pickle.load(outdexer_file)
 doc_dict_file = open(os.path.join(parent_dir, "data/doc_dict"), 'rb') 
 documentDict = pickle.load(doc_dict_file)
 K = 200
-@app.route("/")
-def start():
-    return 'works'
 
-@app.route("/test")
-def test():
-    return {
-        "name":"h",
-        "bro":"nothing"
-    }
 
 @app.route("/test/help", methods=["POST", "GET"])
 def get_query():

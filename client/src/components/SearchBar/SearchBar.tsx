@@ -13,10 +13,10 @@ function SearchBar() {
 
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        console.log("search button clicked")
         navigate('/search', {state:query})
     };
 
+    // Used by dictaphone to put voice queries into search bar
     const handleQuery = (data: any) => {
         setQuery(data);
     }
