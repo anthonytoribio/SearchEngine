@@ -110,7 +110,6 @@ venv.bak/
 *.shelve
 
 # Ignore all text files
-*.txt
 
 #Ignore all json files
 

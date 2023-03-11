@@ -1,0 +1,24 @@
+﻿Bad Queries
+1. “To be or not to be” : Not efficient as it was going over the 300 ms limit
+2. “Master of data science” : Getting irrelevant results and good results were farther in the list
+3. “Machine Learning”: Getting results that are low in information
+4. “To” : Very inefficient, took over a second
+5. “Banana” : Good results are at the bottom
+6. “Wong ma”: The first results are irrelevant to wong ma and or classes she teaches
+7. “Ics 32”: Results are not relevant
+8. “Statistics”: Top result is not relevant to the query
+9. “writing class”: First result leads to ics 6D, which is not a writing class
+10. “Project in cs” : Results are irrelevant
+
+
+Good Queries
+1. Cristina Lopes
+2. cs222
+3. Syllabus cs122b 
+4. Cml research fellowship 
+5. how to get good at fortnite
+6. Research project news
+7. Algorithms and data structures
+8. Hamiltonian cycle
+9. Pagerank
+    10.  Thornton
