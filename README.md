@@ -1,5 +1,5 @@
 # Search Engine Project
-## Authors: 
+## Authors: Derek Naing, Eric Huang, Alejandro Becerra, Anthony Toribio
 
 In this project we implemented a search engine from scratch. This search engine includes
 an indexer, a boolean retrieval model, ranking algorithm, and user interface.
@@ -32,12 +32,14 @@ Run the client:
 * npm install
 * npm start
 
-* The search engine is now running on localhost on port 4999
+* The search engine is now running on localhost on port 3000
 
 ## STEP 5:
 Search a query:
 
 * Type a query in the search bar and either press enter or click on the magnifying class symbol on the right
 
+## Note:
+If you would like to use the voice commands then make sure to run the client on Google Chrome.
 
 
