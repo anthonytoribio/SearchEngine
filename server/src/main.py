@@ -244,15 +244,10 @@ def main():
         print("CREATING INDEXER......")
         buildIndex()
         print("INDEX HAS BEEN CREATED \n")
-
-    #Uncomment it to run pagerank (only run this code once. After running once make sure to comment the code out)
-    #If you want to reset rank change True to False
-    # urlDict = buildUrlDict()
-    # if (True):
-    #     pageRank(urlDict)
-    # else:
-    #     resetRank()
-    #     return
+        print("BUILDING PAGE RANK...")
+        urlDict = buildUrlDict()
+        pageRank(urlDict)
+        print("PAGE RANK CREATED \n")
         
     #This code is to collect and store data for all document's page rank values
     #Load the documentDict
