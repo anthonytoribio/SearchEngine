@@ -61,7 +61,7 @@ def parse(file: str, id: int) -> Document:
     all_text = [word for word in soup.stripped_strings]
     all_words = [SNOWBALL.stem(word) for text in all_text for word in text.split()]
 
-    if (len(all_words) > 0 and len(title.split()) != 0 and title.split()[0] != "Doc:"):
+    if (len(all_words) > 0 and len(title.split()) != 0 and title.split()[0] == "Doc:"):
         title = " ".join(all_words[0:4])
 
     all_words = tokenize(all_words)
