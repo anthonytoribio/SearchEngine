@@ -6,14 +6,41 @@ import { FaSearch } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Dictaphone from '../Dictaphone/Dictaphone';
 
+import doBarrelRoll from '../../pages/Home/HomePage';
+
 function SearchBar() {
     
     const [query, setQuery] = useState('');
     const navigate = useNavigate();
+    let doingBarrelRoll = false;
+
+    function timeout(delay: number) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
+    
+    async function doBarrelRoll() {
+        console.log("DO A BARREL ROLL");
+        const pageElement = document.getElementById("page");
+        if (pageElement && !doingBarrelRoll) {
+            doingBarrelRoll = true;
+            pageElement.classList.add("rotated");
+            document.body.classList.toggle("hide-scroll");
+            await(timeout(2500));
+            pageElement.classList.remove("rotated");
+            document.body.classList.remove("hide-scroll");
+            doingBarrelRoll = false;
+        }
+    }
 
     const handleSubmit = (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-        navigate('/search', {state:query})
+        if (query.toLowerCase() == "do a barrel roll") {
+            e.preventDefault();
+            doBarrelRoll();
+        }
+        else {
+            e.preventDefault();
+            navigate('/search', {state:query})
+        }
     };
 
     // Used by dictaphone to put voice queries into search bar
